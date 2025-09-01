@@ -1,0 +1,1 @@
+cd ../nexus && npm run build && cp audiotool-nexus-0.0.1.tgz ../nexus-examples/.
