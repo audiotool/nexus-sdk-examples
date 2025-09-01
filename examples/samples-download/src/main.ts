@@ -1,52 +1,83 @@
-import { setupAudiotoolDocument } from "@audiotool/nexus"
-import { throw_ } from "@audiotool/nexus/utils"
+import { setPAT, setupAudiotoolProject } from "@audiotool/nexus"
 
-// This example assumes you're connecting to an audiotool project which has some
-// sample regions in it.
+const throw_ = () => {
+  throw new Error()
+}
 
-const {nexus, api} = await setupAudiotoolDocument({
-    mode: "online",
-    project: "https://beta.audiotool.com/studio?project=0410b64e-ba1c-477e-a995-7e2bc1697576"
+// get the pat token.
+fetch("./pat")
+  .then(async (res) => setPAT(await res.text()))
+  .catch(() => {
+    console.warn("couldn't fetch pat, create ../../pat.txt")
+  })
+
+// connect to some project.
+const { nexus, api } = await setupAudiotoolProject({
+  mode: "online",
+  project:
+    "https://beta.audiotool.com/studio?project=0410b64e-ba1c-477e-a995-7e2bc1697576",
 })
 
-const t = await nexus.createTransaction()
-const regions = t.entities.ofTypes("audioRegion").get()
+await nexus.start()
 
-for (const region of regions){
-    console.debug("got sample region with name ", region.fields.region.fields.displayName.value, "on track connected to  name", t.entities.ofTypes("desktopPlacement").pointingTo.entities(region.fields.track.value.entityId).get()[0].fields.displayName.value)
-    const sampleEntity = t.entities.mustGetEntityAs(region.fields.sample.value.entityId, "sample")
-    const sampleName = sampleEntity.fields.sampleId.value
-    console.debug("getting info for sample with name", sampleName)
-    const sampleInfo = await api.sampleService.getSample({name: sampleName})
-    if (sampleInfo instanceof Error){
-        throw new Error("couldn't fetch sample info for audio region", {cause: sampleInfo})
-    }
-    console.debug("got urls:", {
-        flac: sampleInfo.sample?.flacUrl,
-        mp3: sampleInfo.sample?.mp3Url,
-        wav: sampleInfo.sample?.wavUrl
+// Here we just query the document once; the list won't refresh if we add sample regions, to focus
+// on downloading samples
+
+// Get the list of all audio regions.
+for (const region of nexus.queryEntities.ofTypes("audioRegion").get()) {
+  // First, we retrieve the sample entity that the region points to
+  const sampleEntity = nexus.queryEntities.mustGetEntityAs(
+    region.fields.sample.value.entityId,
+    "sample"
+  )
+
+  // The is the sample "name", the identifier used in the backend...
+  const sampleName = sampleEntity.fields.sampleId.value
+
+  // we can call getSample using the name to get more infos on the sample
+  const sampleInfo = await api.sampleService.getSample({ name: sampleName })
+  if (sampleInfo instanceof Error) {
+    throw new Error("couldn't fetch sample info for audio region", {
+      cause: sampleInfo,
     })
+  }
+  console.debug("Infos about this sample:", sampleInfo?.sample)
 
-    const flacData = await fetch(sampleInfo.sample?.flacUrl ?? throw_()).then(res => res.arrayBuffer())
+  // Now we download the mp3 of the sample. There's also flac & wav.
+  const mp3Data = await fetch(sampleInfo.sample?.mp3Url ?? throw_()).then(
+    (res) => res.arrayBuffer()
+  )
 
-    // now we've got the flac data, to do as we like. In the remainder of this function,
-    // we decode the audio, and play is using an audio context, before continuing with
-    // the next region.
+  // And we're done!
 
-    const ctx = new AudioContext()
-    console.debug("decoding audio data...")
-    const audioBuffer = await ctx.decodeAudioData(flacData)
-    console.debug("Done!")
+  // The rest of this file just adds the sample to a list of samples that we can play on click.
 
-    
-    const node = ctx.createBufferSource()
-    node.buffer = audioBuffer
-    node.connect(ctx.destination)
+  const wrapper = document.createElement("div")
 
-    // promise resolves when playback ends
-    const stopPromise = new Promise<void>(res => node.onended = (() => res()))
-    node.start()
-    
-    console.debug("playing buffer...")
-    await stopPromise
+  const audio = document.createElement("audio")
+  const blob = new Blob([mp3Data], { type: "audio/flac" })
+  const url = URL.createObjectURL(blob)
+  audio.src = url
+
+  const playButton = document.createElement("button")
+  playButton.textContent = "Play"
+
+  const nameLabel = document.createElement("span")
+  nameLabel.textContent = region.fields.region.fields.displayName.value
+
+  wrapper.append(playButton, nameLabel)
+  document.getElementById("app")?.appendChild(wrapper)
+
+  // promise resolves when playback ends
+  const stopPromise = new Promise<void>((res) => {
+    audio.onended = () => {
+      URL.revokeObjectURL(url)
+      res()
+    }
+  })
+
+  playButton.addEventListener("click", () => {
+    audio.play()
+  })
+  await stopPromise
 }
