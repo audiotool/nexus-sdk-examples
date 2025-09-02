@@ -1,15 +1,18 @@
-import { setPAT, setupAudiotoolProject } from "@audiotool/nexus"
+
+import { createAudiotoolClient } from "@audiotool/nexus"
 import { createArrayTyped } from "@audiotool/nexus/utils"
+
+const client = await createAudiotoolClient()
 
 // get the pat token.
 fetch("./pat")
-  .then(async (res) => setPAT(await res.text()))
+  .then(async (res) => client.setPAT(await res.text()))
   .catch(() => {
     console.warn("couldn't fetch pat, create ../../pat.txt")
   })
 
 // connect to some project.
-const { nexus, api } = await setupAudiotoolProject({
+const nexus = await client.createSyncedDocument({
   mode: "online",
   project:
     "https://beta.audiotool.com/studio?project=5a268ba0-d7b3-4fb2-9eb1-fc3f00c4fb29",

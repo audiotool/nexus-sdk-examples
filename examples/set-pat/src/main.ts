@@ -1,4 +1,6 @@
-import { hasPAT, setPAT } from "@audiotool/nexus"
+import { createAudiotoolClient } from "@audiotool/nexus"
+
+const client = await createAudiotoolClient()
 
 const app = document.getElementById("app") as HTMLDivElement
 
@@ -7,7 +9,7 @@ function render() {
     app.innerHTML = ""
 
     // Check if PAT is already set
-    if (hasPAT()) {
+    if (client.hasPAT()) {
         showPATSetView()
     } else {
         showPATInputView()
@@ -21,7 +23,7 @@ function showPATSetView() {
     const clearButton = document.createElement("button")
     clearButton.textContent = "Clear PAT"
     clearButton.onclick = () => {
-        setPAT("")
+        client.setPAT("")
         render()
     }
 
@@ -45,7 +47,7 @@ function showPATInputView() {
     submitButton.onclick = () => {
         const token = input.value.trim()
         if (token) {
-            setPAT(token)
+            client.setPAT(token)
             render()
         }
     }
@@ -53,7 +55,7 @@ function showPATInputView() {
     const clearButton = document.createElement("button")
     clearButton.textContent = "Clear PAT"
     clearButton.onclick = () => {
-        setPAT("")
+        client.setPAT("")
         render()
     }
 
