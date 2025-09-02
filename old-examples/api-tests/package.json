@@ -1,0 +1,18 @@
+{
+  "name": "api-tests",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5174",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.8.3",
+    "vite": "^7.1.2"
+  },
+  "dependencies": {
+    "@audiotool/nexus": "file:../../audiotool-nexus-0.0.1.tgz"
+  }
+}
