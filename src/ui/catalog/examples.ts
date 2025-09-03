@@ -2,6 +2,7 @@ import type { AudiotoolClient } from "audiotool-nexus";
 import { createSound } from "../../examples/create-sound";
 import { downloadSamples } from "../../examples/download-samples";
 import { createProject } from "../../examples/create-project";
+import { readUser } from "../../examples/read-user";
 
 export type Example = {
   title: string;
@@ -116,6 +117,34 @@ export const EXAMPLE_CREATE_PROJECT: Example = {
     } catch (error) {
       console.log(
         `Error: Failed to create project: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+    }
+  },
+};
+
+export const EXAMPLE_READ_USER: Example = {
+  title: "Read User Data",
+  description: "Read user data given a username using the user service",
+  requirements: ["Username (e.g., users/kepz)"],
+  actionLabel: "Read User",
+  action: async (audiotool, username) => {
+    console.clear();
+    console.log("Reading user data...");
+
+    try {
+      // read user data
+      const userInfo = await readUser(audiotool, username);
+
+      console.log("User data retrieved successfully!");
+      console.log(`Username: ${userInfo.name}`);
+      console.log(`Display Name: ${userInfo.displayName}`);
+      console.log(`Followers: ${userInfo.followers}`);
+      console.log(`Following: ${userInfo.following}`);
+    } catch (error) {
+      console.log(
+        `Error: Failed to read user data: ${
           error instanceof Error ? error.message : String(error)
         }`
       );

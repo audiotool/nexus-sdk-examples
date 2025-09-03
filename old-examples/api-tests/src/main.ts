@@ -14,43 +14,6 @@ apiTestsForm.addEventListener("submit", async (e) => {
   client.setPAT(patInput.value)
 })
 
-/** user service examples */
-const userService = async () => {
-  const current = await client.api.userService.getUser({})
-  if (current instanceof Error) {
-    throw current
-  }
-  console.debug(
-    "Current user:",
-    current.user?.name,
-    "display name:",
-    current.user?.displayName
-  )
-
-  const otherUser = await client.api.userService.getUser({
-    name: "users/kepz",
-  })
-  if (otherUser instanceof Error) {
-    throw otherUser
-  }
-  console.debug("kepz is", otherUser.user?.displayName)
-
-  // const search = await client.api.userService.listUsers({
-  //   filter: "user.display_name='SilasGyger'",
-  // })
-  // if (search instanceof Error) {
-  //   throw search
-  // }
-  // console.table(
-  //   search.users.map((u) => ({
-  //     name: u.name,
-  //     displayName: u.displayName,
-  //   }))
-  // )
-}
-
-// await userService()
-
 const nexusDocument = await client.createSyncedDocument({
   mode: "offline",
   validated: false,

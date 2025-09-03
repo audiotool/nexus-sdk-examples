@@ -3,6 +3,7 @@ import {
   EXAMPLE_CREATE_SOUND,
   EXAMPLE_DOWNLOAD_SAMPLES,
   EXAMPLE_CREATE_PROJECT,
+  EXAMPLE_READ_USER,
   type Example,
 } from "./examples";
 
@@ -15,6 +16,7 @@ export const createCatalog = (controlPanel: ControlPanel): HTMLDivElement => {
     EXAMPLE_CREATE_SOUND,
     EXAMPLE_DOWNLOAD_SAMPLES,
     EXAMPLE_CREATE_PROJECT,
+    EXAMPLE_READ_USER,
   ];
 
   const title = document.createElement("h2");
