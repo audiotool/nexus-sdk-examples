@@ -14,33 +14,6 @@ apiTestsForm.addEventListener("submit", async (e) => {
   client.setPAT(patInput.value)
 })
 
-//** project service examples */
-const projectService = async () => {
-  const projects = await client.api.projectService.listProjects({})
-  if (projects instanceof Error) {
-    console.error(projects)
-  } else {
-    console.table(
-      projects.projects.map((p) => ({
-        name: p.displayName,
-        backendName: p.name,
-        creator: p.creatorName,
-      }))
-    )
-  }
-
-  // turned off to avoid noise
-  if (false) {
-    await client.api.projectService.createProject({
-      project: {
-        displayName: "My New Project",
-      },
-    })
-  }
-}
-
-// await projectService()
-
 /** user service examples */
 const userService = async () => {
   const current = await client.api.userService.getUser({})

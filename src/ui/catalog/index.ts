@@ -2,7 +2,7 @@ import type { ControlPanel } from "../control-panel";
 import {
   EXAMPLE_CREATE_SOUND,
   EXAMPLE_DOWNLOAD_SAMPLES,
-  EXAMPLE_SET_PAT,
+  EXAMPLE_CREATE_PROJECT,
   type Example,
 } from "./examples";
 
@@ -14,7 +14,7 @@ export const createCatalog = (controlPanel: ControlPanel): HTMLDivElement => {
   const examples: Example[] = [
     EXAMPLE_CREATE_SOUND,
     EXAMPLE_DOWNLOAD_SAMPLES,
-    EXAMPLE_SET_PAT,
+    EXAMPLE_CREATE_PROJECT,
   ];
 
   const title = document.createElement("h2");

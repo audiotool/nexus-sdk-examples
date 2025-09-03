@@ -1,6 +1,7 @@
 import type { AudiotoolClient } from "audiotool-nexus";
 import { createSound } from "../../examples/create-sound";
 import { downloadSamples } from "../../examples/download-samples";
+import { createProject } from "../../examples/create-project";
 
 export type Example = {
   title: string;
@@ -91,5 +92,33 @@ export const EXAMPLE_SET_PAT: Example = {
   actionLabel: "Set Token",
   action: async (audiotool, pat) => {
     // TODO: implement actual PAT setting logic
+  },
+};
+
+export const EXAMPLE_CREATE_PROJECT: Example = {
+  title: "Create Project",
+  description: "Create a new project using the project service",
+  requirements: ["Project Display Name"],
+  actionLabel: "Create Project",
+  action: async (audiotool, displayName) => {
+    console.clear();
+    console.log("Creating new project...");
+
+    try {
+      // create project
+      const projectInfo = await createProject(audiotool, displayName);
+
+      console.log("Project created successfully!");
+      console.log(`Project Name: ${projectInfo.displayName}`);
+      console.log(`Backend Name: ${projectInfo.name}`);
+      console.log(`Creator: ${projectInfo.creatorName}`);
+      console.log(`Project URL: ${projectInfo.url}`);
+    } catch (error) {
+      console.log(
+        `Error: Failed to create project: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+    }
   },
 };
