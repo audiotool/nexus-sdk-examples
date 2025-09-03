@@ -3,6 +3,7 @@ import { createSound } from "../../examples/create-sound";
 import { downloadSamples } from "../../examples/download-samples";
 import { createProject } from "../../examples/create-project";
 import { readUser } from "../../examples/read-user";
+import { countEntities } from "../../examples/count-entities";
 
 export type Example = {
   title: string;
@@ -127,7 +128,7 @@ export const EXAMPLE_CREATE_PROJECT: Example = {
 export const EXAMPLE_READ_USER: Example = {
   title: "Read User Data",
   description: "Read user data given a username using the user service",
-  requirements: ["Username (e.g., users/kepz)"],
+  requirements: ["Username (e.g., kepz)"],
   actionLabel: "Read User",
   action: async (audiotool, username) => {
     console.clear();
@@ -145,6 +146,47 @@ export const EXAMPLE_READ_USER: Example = {
     } catch (error) {
       console.log(
         `Error: Failed to read user data: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+    }
+  },
+};
+
+export const EXAMPLE_COUNT_ENTITIES: Example = {
+  title: "Count Project Entities",
+  description:
+    "Count entities of a given type in a project and display their IDs",
+  requirements: [
+    "Project URL",
+    "Entity Type (e.g., tonematrix, mixerChannel, sample)",
+  ],
+  actionLabel: "Count Entities",
+  action: async (audiotool, projectURL, entityType) => {
+    console.clear();
+    console.log("Counting project entities...");
+
+    try {
+      // count entities
+      const result = await countEntities(audiotool, projectURL, entityType);
+
+      console.log(`Entity count for ${result.entityType}: ${result.count}`);
+
+      if (result.count > 0) {
+        console.log("\nEntity IDs:");
+        result.entityIds.forEach((id: string, index: number) => {
+          console.log(`${index + 1}. ${id}`);
+        });
+      } else {
+        console.log(
+          `\nNo ${result.entityType} entities found in this project.`
+        );
+      }
+
+      console.log(`\nProject: ${projectURL}`);
+    } catch (error) {
+      console.log(
+        `Error: Failed to count entities: ${
           error instanceof Error ? error.message : String(error)
         }`
       );
