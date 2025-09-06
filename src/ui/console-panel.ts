@@ -10,8 +10,10 @@ export const createConsolePanel = (): HTMLDivElement => {
   console.clear = () => {
     consolePre.textContent = "";
   };
-  console.log = (message: string) => {
-    consolePre.textContent += message + "\n";
+  const log = console.log
+  console.log = (...args: string[]) => {
+    log(...args)
+    consolePre.textContent += args.join(" ") + "\n";
   };
 
   return consolePanel;
