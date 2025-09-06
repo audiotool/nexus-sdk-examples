@@ -1,4 +1,4 @@
-import type { AudiotoolClient } from "@audiotool/nexus";
+import { createAudiotoolClient } from "@audiotool/nexus";
 import type { Example } from "./catalog/examples";
 
 export type ControlPanel = {
@@ -7,7 +7,6 @@ export type ControlPanel = {
 };
 
 export const createControlPanel = (
-  audiotool: AudiotoolClient
 ): ControlPanel => {
   const controlPanel = document.createElement("div");
   controlPanel.classList.add("control-panel");
@@ -74,7 +73,8 @@ export const createControlPanel = (
           submitButton.disabled = true;
           submitButton.textContent = "Executing...";
 
-          await example.action(audiotool, ...inputValues);
+          // note: this creates a new client every single time, which is discouraged, as old clients aren't cleaned up yet.
+          await example.action(await createAudiotoolClient({pat: import.meta.env.VITE_AUDIOTOOL_PAT}), ...inputValues);
 
           console.log("--------------------------------");
           console.log(`Successfully executed: ${example.title}`);

@@ -1,17 +1,9 @@
-import { createAudiotoolClient, type AudiotoolClient } from "@audiotool/nexus";
 import { createCatalog } from "./catalog";
 import { createConsolePanel } from "./console-panel";
 import { createControlPanel } from "./control-panel";
 import { createPATSetup } from "./pat-setup";
 
-const AUDIOTOOL_PAT = import.meta.env.VITE_AUDIOTOOL_PAT;
-
-// global variable to store the audiotool client for use across components
-let audiotool: AudiotoolClient | null = null;
-
-export const getAudiotoolClient = (): AudiotoolClient | null => {
-  return audiotool;
-};
+export const AUDIOTOOL_PAT = import.meta.env.VITE_AUDIOTOOL_PAT;
 
 export const createApp = async (): Promise<HTMLElement> => {
   // create app container
@@ -27,10 +19,8 @@ export const createApp = async (): Promise<HTMLElement> => {
   } else {
     // initialize audiotool client and show main UI
     try {
-      audiotool = await createAudiotoolClient({pat: AUDIOTOOL_PAT});
-
       const consolePanel = createConsolePanel();
-      const controlPanel = createControlPanel(audiotool);
+      const controlPanel = createControlPanel();
       const catalog = createCatalog(controlPanel);
 
       app.appendChild(catalog);
