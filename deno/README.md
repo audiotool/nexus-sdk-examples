@@ -65,7 +65,7 @@ Note Region 'Long Notes' has notes:
 
 ## Example 2: `react-to-tchanges.ts`
 
-This example reacts to changes of a note region. Example output:
+This example reacts to changes done by a user in the DAW in realtime. Example output:
 
 ```
 crated region with name: Notes at position: 0
