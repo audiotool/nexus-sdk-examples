@@ -1,0 +1,21 @@
+{
+  "name": "nexus-sdk-example-deno",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@audiotool/nexus": "file:audiotool-nexus-0.0.4.tgz",
+    "js-cookie": "^3.0.5",
+    "toposort": "^2.0.2",
+    "utility-types": "^3.11.0",
+    "uuid": "^11.1.0",
+    "zod": "^4.1.12"
+  },
+  "scripts": {
+    "current-state": "deno run --allow-env  --allow-net --env-file=.env get-current-state.ts ",
+    "react-to-changes": "deno run --allow-env  --allow-net --env-file=.env react-to-changes.ts ",
+    "write-melody": "deno run --allow-env  --allow-net --env-file=.env write-melody.ts "
+  },
+  "author": "",
+  "license": "ISC"
+}
