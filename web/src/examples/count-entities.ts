@@ -23,8 +23,11 @@ export const countEntities = async (
   await nexus.start();
 
   // STEP 2: query entities of the specified type
-  
-  const entities = entityType !== undefined ? nexus.queryEntities.ofTypes(entityType).get() : nexus.queryEntities.get();
+
+  const entities =
+    entityType !== undefined
+      ? nexus.queryEntities.ofTypes(entityType).get()
+      : nexus.queryEntities.get();
 
   // STEP 3: extract entity IDs and return count information
   const entityIds = entities.map((entity) => entity.id);

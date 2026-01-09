@@ -6,8 +6,7 @@ export type ControlPanel = {
   loadExample: (example: Example) => void;
 };
 
-export const createControlPanel = (
-): ControlPanel => {
+export const createControlPanel = (): ControlPanel => {
   const controlPanel = document.createElement("div");
   controlPanel.classList.add("control-panel");
 
@@ -74,7 +73,12 @@ export const createControlPanel = (
           submitButton.textContent = "Executing...";
 
           // note: this creates a new client every single time, which is discouraged, as old clients aren't cleaned up yet.
-          await example.action(await createAudiotoolClient({pat: import.meta.env.VITE_AUDIOTOOL_PAT}), ...inputValues);
+          await example.action(
+            await createAudiotoolClient({
+              authorization: import.meta.env.VITE_AUDIOTOOL_PAT,
+            }),
+            ...inputValues
+          );
 
           console.log("--------------------------------");
           console.log(`Successfully executed: ${example.title}`);

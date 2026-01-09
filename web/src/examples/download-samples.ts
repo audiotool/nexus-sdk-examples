@@ -38,7 +38,7 @@ export const downloadSamples = async (
     );
 
     // this is the sample "name", the identifier used in the backend
-    const sampleName = sampleEntity.fields.sampleId.value;
+    const sampleName = sampleEntity.fields.sampleName.value;
 
     // get more info on the sample using the API
     const sampleInfo = await audiotool.api.sampleService.getSample({

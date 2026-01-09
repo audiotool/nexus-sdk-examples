@@ -169,9 +169,17 @@ export const EXAMPLE_COUNT_ENTITIES: Example = {
 
     try {
       // count entities
-      const result = await countEntities(audiotool, projectURL, entityType as EntityTypeKey);
+      const result = await countEntities(
+        audiotool,
+        projectURL,
+        entityType as EntityTypeKey
+      );
 
-      console.log(`Entity count for ${result.entityType}: ${result.count}`);
+      if (result.entityType === undefined) {
+        console.log(`Total entities: ${result.count}`);
+      } else {
+        console.log(`Entity count for ${result.entityType}: ${result.count}`);
+      }
 
       if (result.count > 0) {
         console.log("\nEntity IDs:");

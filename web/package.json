@@ -8,11 +8,11 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "@audiotool/nexus": "file:audiotool-nexus-0.0.2.tgz"
-  },
   "devDependencies": {
     "typescript": "~5.8.3",
     "vite": "^7.1.2"
+  },
+  "dependencies": {
+    "@audiotool/nexus": "^0.0.8"
   }
 }

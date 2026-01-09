@@ -1,5 +1,5 @@
 import { type AudiotoolClient } from "@audiotool/nexus";
-import { createArrayTyped } from "@audiotool/nexus/utils";
+import { createTypedArray } from "@audiotool/nexus/utils";
 
 /**
  * Create a sound with a tonematrix in the specified project
@@ -29,22 +29,15 @@ export const createSound = async (
   t.create("tonematrixPattern", {
     // patterns point to a "pattern slot", an empty field in an array. Here we attach it to slot 1. There can be
     // at most 1 pattern per slot. For the tonematrix, there are only 8 slots.
-    slot: tm.fields.patterns.array[0].location,
-    steps: createArrayTyped(16, () => ({
-      notes: createArrayTyped(16, () => Math.random() > 0.74),
+    slot: tm.fields.patternSlots.array[0].location,
+    steps: createTypedArray(16, () => ({
+      notes: createTypedArray(16, () => Math.random() > 0.74),
     })),
-  });
-
-  // this places the tonematrix on the desktop
-  t.create("desktopPlacement", {
-    entity: tm.location,
-    x: 0,
-    y: 0,
   });
 
   // STEP 4: connect the tonematrix to the first channel that doesn't have
   //         something pointing to its audio input
-  const firstFreeChannel = t.entities
+  let freeChannel = t.entities
     .ofTypes("mixerChannel")
     .get()
     .filter(
@@ -56,16 +49,36 @@ export const createSound = async (
 
   // as for this example we expect a free channel to be there on the given
   // project
-  if (firstFreeChannel === undefined) {
-    throw new Error(
-      "No free channel found, make sure there is one on the given project."
-    );
+  if (freeChannel === undefined) {
+    freeChannel = t.create("mixerChannel", {
+      displayParameters: {
+        orderAmongStrips:
+          // get the max of all existing channels, add 1
+          t.entities
+            .ofTypes(
+              "mixerChannel",
+              "mixerGroup",
+              "mixerAux",
+              "mixerDelayAux",
+              "mixerReverbAux"
+            )
+            .get()
+            .reduce(
+              (max, channel) =>
+                Math.max(
+                  max,
+                  channel.fields.displayParameters.fields.orderAmongStrips.value
+                ),
+              0
+            ) + 1,
+      },
+    });
   }
 
   // STEP 5: connect the tonematrix with that channel using an audio connection
-  t.create("audioConnection", {
+  t.create("desktopAudioCable", {
     fromSocket: tm.fields.audioOutput.location,
-    toSocket: firstFreeChannel.fields.audioInput.location,
+    toSocket: freeChannel.fields.audioInput.location,
   });
 
   // STEP 6: send the transaction
