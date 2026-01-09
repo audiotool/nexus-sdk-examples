@@ -2,7 +2,7 @@ import { createAudiotoolClient } from "@audiotool/nexus";
 import { AT_PAT, AT_PROJECT } from "./setup.ts";
 
 const client = await createAudiotoolClient({
-  pat: AT_PAT,
+  authorization: AT_PAT,
 });
 
 const nexus = await client.createSyncedDocument({
@@ -61,7 +61,7 @@ nexus.events.onCreate("noteRegion", (region) => {
     false
   );
 
-  nexus.events.onPointingTo(region.fields.noteCollection.value, (note) => {
+  nexus.events.onPointingTo(region.fields.collection.value, (note) => {
     console.debug("note created in region with name:", currentName);
     // this is more complicated than it needs to be, SDK is still in development!
 

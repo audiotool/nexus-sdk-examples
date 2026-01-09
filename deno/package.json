@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@audiotool/nexus": "file:audiotool-nexus-0.0.4.tgz",
+    "@audiotool/nexus": "^0.0.8",
     "js-cookie": "^3.0.5",
     "toposort": "^2.0.2",
     "utility-types": "^3.11.0",
@@ -12,9 +12,9 @@
     "zod": "^4.1.12"
   },
   "scripts": {
-    "current-state": "deno run --allow-env  --allow-net --env-file=.env get-current-state.ts ",
-    "react-to-changes": "deno run --allow-env  --allow-net --env-file=.env react-to-changes.ts ",
-    "write-melody": "deno run --allow-env  --allow-net --env-file=.env write-melody.ts "
+    "current-state": "deno run --allow-env --allow-read  --allow-net --env-file=.env get-current-state.ts ",
+    "react-to-changes": "deno run --allow-env --allow-read  --allow-net --env-file=.env react-to-changes.ts ",
+    "write-melody": "deno run --allow-env --allow-read  --allow-net --env-file=.env write-melody.ts "
   },
   "author": "",
   "license": "ISC"

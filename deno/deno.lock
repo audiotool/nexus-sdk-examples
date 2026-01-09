@@ -1,0 +1,73 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:@audiotool/nexus@^0.0.8": "0.0.8_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0",
+    "npm:js-cookie@^3.0.5": "3.0.5",
+    "npm:toposort@^2.0.2": "2.0.2",
+    "npm:utility-types@^3.11.0": "3.11.0",
+    "npm:uuid@^11.1.0": "11.1.0",
+    "npm:zod@^4.1.12": "4.1.12"
+  },
+  "npm": {
+    "@audiotool/nexus@0.0.8_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0": {
+      "integrity": "sha512-Szli8BfUoxbtSCbZ8xaL8yus7f1zIoqsNNT8vSzFdX94ro6ZUUBzKQcn0L8r3Gu8yAfYxO903eQxl7Qt+d1mAg==",
+      "dependencies": [
+        "@bufbuild/protobuf",
+        "@connectrpc/connect",
+        "@connectrpc/connect-web",
+        "@types/js-cookie",
+        "js-cookie",
+        "toposort",
+        "utility-types",
+        "uuid"
+      ]
+    },
+    "@bufbuild/protobuf@1.10.0": {
+      "integrity": "sha512-QDdVFLoN93Zjg36NoQPZfsVH9tZew7wKDKyV5qRdj8ntT4wQCOradQjRaTdwMhWUYsgKsvCINKKm87FdEk96Ag=="
+    },
+    "@connectrpc/connect-web@1.7.0_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0": {
+      "integrity": "sha512-qyP0YOnUPRWwCc/VfsoydMJvkb7EyUPr2q9sHgBuJzbADjiqck1gKH5V5ZPzPhTLBvmz5UvG+wiZ5sMRQHU1MQ==",
+      "dependencies": [
+        "@bufbuild/protobuf",
+        "@connectrpc/connect"
+      ]
+    },
+    "@connectrpc/connect@1.7.0_@bufbuild+protobuf@1.10.0": {
+      "integrity": "sha512-iNKdJRi69YP3mq6AePRT8F/HrxWCewrhxnLMNm0vpqXAR8biwzRtO6Hjx80C6UvtKJ5sFmffQT7I4Baecz389w==",
+      "dependencies": [
+        "@bufbuild/protobuf"
+      ]
+    },
+    "@types/js-cookie@3.0.6": {
+      "integrity": "sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ=="
+    },
+    "js-cookie@3.0.5": {
+      "integrity": "sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw=="
+    },
+    "toposort@2.0.2": {
+      "integrity": "sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg=="
+    },
+    "utility-types@3.11.0": {
+      "integrity": "sha512-6Z7Ma2aVEWisaL6TvBCy7P8rm2LQoPv6dJ7ecIaIixHcwfbJ0x7mWdbcwlIM5IGQxPZSFYeqRCqlOOeKoJYMkw=="
+    },
+    "uuid@11.1.0": {
+      "integrity": "sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==",
+      "bin": true
+    },
+    "zod@4.1.12": {
+      "integrity": "sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ=="
+    }
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@audiotool/nexus@^0.0.8",
+        "npm:js-cookie@^3.0.5",
+        "npm:toposort@^2.0.2",
+        "npm:utility-types@^3.11.0",
+        "npm:uuid@^11.1.0",
+        "npm:zod@^4.1.12"
+      ]
+    }
+  }
+}

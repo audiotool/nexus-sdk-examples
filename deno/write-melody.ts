@@ -1,8 +1,9 @@
-import { createAudiotoolClient, Ticks } from "@audiotool/nexus";
+import { createAudiotoolClient } from "@audiotool/nexus";
+import { Ticks } from "@audiotool/nexus/utils";
 import { AT_PAT, AT_PROJECT } from "./setup.ts";
 
 const client = await createAudiotoolClient({
-  pat: AT_PAT,
+  authorization: AT_PAT,
 });
 
 const nexus = await client.createSyncedDocument({
@@ -27,13 +28,10 @@ await nexus.start();
 const t = await nexus.createTransaction();
 
 // step 1: Crate a device...
-const pulv = t.create("pulverisateur", {});
-// ...and place it on the desktop.
-t.create("desktopPlacement", {
-  entity: pulv.location,
-  x: 100,
-  y: 300,
+const pulv = t.create("pulverisateur", {
   displayName: "My Pulv",
+  positionX: 100,
+  positionY: 300,
 });
 
 // step 2: wire the device up with the mixer, so it becomes audible.
@@ -42,19 +40,8 @@ t.create("desktopPlacement", {
 
 const mixerChannel = t.create("mixerChannel", {});
 
-// Connect to mixer channel to the master. Note: currently, forgetting that leads to confusing silence.
-// This will be improved.
-
-const mainOut =
-  t.entities.ofTypes("mixerOut").getOne() ?? t.create("mixerOut", {});
-
-t.create("mixerStripCable", {
-  childStrip: mixerChannel.fields.stripOutput.location,
-  parentStrip: mainOut.location,
-});
-
 // wire the pulv with the channel strip
-t.create("audioConnection", {
+t.create("desktopAudioCable", {
   fromSocket: pulv.fields.audioOutput.location,
   toSocket: mixerChannel.fields.audioInput.location,
 });
@@ -79,7 +66,7 @@ const collection = t.create("noteCollection", {});
 
 t.create("noteRegion", {
   // point to the collection
-  noteCollection: collection.location,
+  collection: collection.location,
   track: track.location,
   region: {
     // unless looping is desired, these two values should match
@@ -93,7 +80,7 @@ t.create("noteRegion", {
     collectionOffsetTicks: 0,
     colorIndex: 3,
     displayName: "My Melody",
-    enabled: true,
+    isEnabled: true,
   },
 });
 
@@ -126,7 +113,7 @@ t.create("noteRegion", {
   },
 ].forEach((note) => {
   t.create("note", {
-    noteCollection: collection.location,
+    collection: collection.location,
     positionTicks: Math.floor(note.positionBeats * Ticks.Beat),
     durationTicks: Math.floor(note.durationBeats * Ticks.Beat),
     pitch: note.pitch,

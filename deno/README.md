@@ -2,8 +2,6 @@
 
 This example shows how to use the SDK using deno.
 
-It uses `package.json` for now to allow installing the package via `.tgz`.
-
 How to run:
 
 - [install deno](https://docs.deno.com/runtime/getting_started/installation/)
@@ -11,20 +9,18 @@ How to run:
 - go to [beta.audiotool.com](https://beta.audiotool.com/), log in
 - go to [rpc.audiotool.com/dev/pats](https://rpc.audiotool.com/dev/pats/), create a PAT
 - crate a .env file with the following contents:
-    ```
-    AT_PAT=at_pat_your_token_here
-    AT_PROJECT="https://beta.audiotool.com/studio?project=your-project-here"
-    ```
+  ```
+  AT_PAT=at_pat_your_token_here
+  AT_PROJECT="https://beta.audiotool.com/studio?project=your-project-here"
+  ```
 - run with `deno run x`, where x is one of:
-    - `current-state`
-    - `react-to-changes`
-    - `write-melody`
-
+  - `current-state`
+  - `react-to-changes`
+  - `write-melody`
 
 ### Caveat:
+
 After `nexus.start()` has been called, there's currently no way to `stop` it, meaning the process has to to be killed with Ctrl + C. This is being worked on.
-
-
 
 ## Example 1: `get-current-state.ts`
 
@@ -35,7 +31,6 @@ Example: This project:
 ![get-current-state-example](./images/get-current-state.png)
 
 outputs:
-
 
 ```
 > deno run current-state
@@ -62,7 +57,6 @@ Note Region 'Long Notes' has notes:
 └───────┴──────────┴───────┴──────────┘
 ```
 
-
 ## Example 2: `react-to-tchanges.ts`
 
 This example reacts to changes done by a user in the DAW in realtime. Example output:
@@ -80,7 +74,6 @@ note removed from region with name: Hello There
 note removed from region with name: Hello There
 removed region with name: Hello There
 ```
-
 
 ## Example 3: `write-melody.ts`
 

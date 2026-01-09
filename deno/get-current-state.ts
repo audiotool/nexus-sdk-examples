@@ -2,7 +2,7 @@ import { createAudiotoolClient } from "@audiotool/nexus";
 import { AT_PAT, AT_PROJECT } from "./setup.ts";
 
 const client = await createAudiotoolClient({
-  pat: AT_PAT,
+  authorization: AT_PAT,
 });
 
 const nexus = await client.createSyncedDocument({
@@ -12,13 +12,14 @@ const nexus = await client.createSyncedDocument({
 
 // In this example, we'll simply print out all current note regions. This is not synced in real time.
 
+console.debug("Starting...");
 // Calling this will fetch the current project state, so we can query it after. See documentation for more details.
 await nexus.start();
 
-nexus.queryEntities
-  .ofTypes("noteRegion")
-  .get()
-  .forEach((region) => {
+const noteRegions = nexus.queryEntities.ofTypes("noteRegion").get();
+
+if (noteRegions.length > 0) {
+  noteRegions.forEach((region) => {
     console.debug(
       `Note Region '${region.fields.region.fields.displayName.value}' has notes:`
     );
@@ -26,7 +27,7 @@ nexus.queryEntities
     const notes = nexus.queryEntities
       .ofTypes("note")
       // pointing to the collection used by the note region
-      .pointingTo.entities(region.fields.noteCollection.value.entityId)
+      .pointingTo.entities(region.fields.collection.value.entityId)
       .get()
       // map to a more readable format
       .map((note) => {
@@ -39,3 +40,6 @@ nexus.queryEntities
 
     console.table(notes);
   });
+} else {
+  console.debug("No note regions in this project.");
+}
