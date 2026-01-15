@@ -63,10 +63,13 @@
   .horizontal {
     display: flex;
     flex-direction: row;
+    margin-top: 20px;
     gap: 10px;
   }
   .horizontal div {
-    border: 1px solid black;
+    border: 1px solid #8b8b8b;
+
+    border-radius: 10px;
     padding: 10px;
   }
   .horizontal h2 {

@@ -11,7 +11,6 @@
   })
 </script>
 
-<h1>Entity Count</h1>
 {#if count === undefined}
   <p>Counting entities...</p>
 {:else}

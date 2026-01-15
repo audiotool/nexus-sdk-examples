@@ -13,20 +13,24 @@ import type { LoginManager } from "./login-manager.svelte"
  */
 
 export type ProjectOpener = {
-  /** this becomes defined after a synced document was created based on an openProject or createProject call. Error if something went wrong.*/
-  nexus: NexusStatus
-  /** Open an existing project - either a project object, an url the user pastes, or a backend identifier. */
+  /** changes based on the call to openProject or createProject. */
+  openedProject: ProjectOpeningStatus
+  /** Open an existing project - either a project object, an url to a project on beta.audiotool.com, or a backend identifier. */
   openProject: (projectOrId: Project | string) => void
   /** create a new project with a given display name. */
   createProject: (displayName: string) => void
 }
 
-export type NexusStatus =
+export type ProjectOpeningStatus =
+  /** no project selected. */
   | undefined
+  /** project selected, loading in progress. */
   | {
       type: "loading"
     }
+  /** something went wrong. */
   | { type: "error"; error: Error }
+  /** project is ready to use. */
   | { type: "ready"; nexus: SyncedDocument }
 
 export const audiotoolProjectOpener = (
@@ -55,9 +59,6 @@ export const audiotoolProjectOpener = (
     | { type: "ready"; nexus: SyncedDocument }
   >(undefined)
 
-  // flag we set to true once we start creating the synced document to avoid race conditions.
-  let loadingStarted = $state(false)
-
   $effect(() => {
     if (selectedProjectUrl === undefined) {
       return
@@ -65,10 +66,10 @@ export const audiotoolProjectOpener = (
     if (loginManager.status.type !== "logged-in") {
       return
     }
-    if (loadingStarted) {
+    // loading already in progress, we currently can't load documents twice.
+    if (nexus !== undefined) {
       return
     }
-    loadingStarted = true
 
     nexus = { type: "loading" }
     loadProject(
@@ -86,7 +87,7 @@ export const audiotoolProjectOpener = (
 
   return {
     // reactive return
-    get nexus() {
+    get openedProject() {
       return nexus
     },
     createProject: (displayName: string) => {

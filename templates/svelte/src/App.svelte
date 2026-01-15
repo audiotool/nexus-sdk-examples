@@ -8,7 +8,7 @@
   import { audiotoolProjectLister } from "./lib/audiotool-utils/project-lister.svelte"
   import {
     audiotoolProjectOpener,
-    type NexusStatus,
+    type ProjectOpeningStatus,
   } from "./lib/audiotool-utils/project-opener.svelte"
 
   const loginManager = audiotoolLoginManager({
@@ -23,9 +23,10 @@
 
   let projectOpener = audiotoolProjectOpener(loginManager)
   let projectLister = audiotoolProjectLister(loginManager)
-  let nexus = $derived<NexusStatus>(projectOpener.nexus)
+  let nexus = $derived<ProjectOpeningStatus>(projectOpener.openedProject)
 </script>
 
+<h1>Entity Counter</h1>
 <Login {loginManager} />
 
 {#if nexus === undefined}

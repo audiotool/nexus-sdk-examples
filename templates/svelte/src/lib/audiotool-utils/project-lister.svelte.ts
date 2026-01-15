@@ -31,7 +31,6 @@ export const audiotoolProjectLister = (loginStatus: {
     if (loadingStarted) {
       return
     }
-    console.debug("listing!")
     loadingStarted = true
     fetchProjects(loginStatus.status.client).then((ps) => {
       projects = ps
@@ -60,7 +59,6 @@ const fetchProjects = async (
     if (response instanceof Error) {
       return response
     }
-    console.debug("fetched", response.projects?.length)
     projects.push(...response.projects)
     nextPageToken = response.nextPageToken
   } while (nextPageToken !== "" && nextPageToken !== undefined)
