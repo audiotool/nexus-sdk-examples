@@ -1,6 +1,6 @@
-# Plain Typescript Template
+# Svelte Template
 
-This is the template without framework like react.
+This is the template to get started using svelte with typescript.
 
 ## Getting Started
 

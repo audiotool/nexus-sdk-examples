@@ -1,14 +1,10 @@
 <script lang="ts">
-  import type { LoginManager } from "./audiotool-utils/login-manager.svelte";
+  import type { LoginManager } from "./audiotool-utils/login-manager.svelte"
 
-  const { loginManager}: {loginManager: LoginManager} = $props()
+  const { loginManager }: { loginManager: LoginManager } = $props()
 
   let status = $derived(loginManager.status)
-
-  
 </script>
-
-
 
 {#if status.type === "loading"}
   <p>Loading...</p>
@@ -25,4 +21,3 @@
 {#if status.type === "logged-in"}
   <button onclick={status.logout}>Logout</button>
 {/if}
-

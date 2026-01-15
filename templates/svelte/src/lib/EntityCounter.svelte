@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { SyncedDocument } from "@audiotool/nexus"
-  import ProjectSelector from "./SelectProject.svelte"
 
   let { nexus }: { nexus: SyncedDocument } = $props()
 
