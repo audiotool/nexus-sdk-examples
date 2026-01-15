@@ -1,14 +1,6 @@
 <script lang="ts">
-  import type { AudiotoolClient, SyncedDocument } from "@audiotool/nexus"
-  import {
-    audiotoolProjectOpener,
-    type ProjectOpener,
-  } from "./audiotool-utils/project-opener.svelte"
-  import {
-    audiotoolProjectLister,
-    type ProjectLister,
-  } from "./audiotool-utils/project-lister.svelte"
-  import type { LoginManager } from "./audiotool-utils/login-manager.svelte"
+  import { type ProjectOpener } from "./audiotool-utils/project-opener.svelte"
+  import { type ProjectLister } from "./audiotool-utils/project-lister.svelte"
 
   let {
     projectOpener,
