@@ -1,0 +1,90 @@
+/*  vibe-coded style sheet */
+
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap');
+
+:root {
+  --bg: #1c1c1e;
+  --surface: #2c2c2e;
+  --border: #3a3a3c;
+  --text: #f5f5f7;
+  --text-dim: #98989d;
+  --accent: #0a84ff;
+  --accent-hover: #409cff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 48px 32px;
+  line-height: 1.5;
+}
+
+button {
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--accent);
+  color: white;
+  margin: 8px 12px 8px 0;
+  transition: background 0.15s;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+button:active {
+  opacity: 0.9;
+}
+
+input {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  width: 100%;
+  max-width: 360px;
+  margin: 16px 0;
+  margin-right: 20px;
+}
+
+input::placeholder {
+  color: var(--text-dim);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+p {
+  margin: 8px 0;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+p[style*="bold"] {
+  color: var(--text) !important;
+  font-weight: 600;
+  margin-top: 24px;
+}
+
+::selection {
+  background: var(--accent);
+  color: white;
+}
