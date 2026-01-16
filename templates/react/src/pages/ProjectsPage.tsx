@@ -5,8 +5,10 @@ interface ProjectsPageProps {
     client: AudiotoolClient
 }
 function ProjectsPage({ client }: ProjectsPageProps) {
+    // Fetch projects using the authenticated client
     const projectsResult = useProjects(client)
 
+    // Create a new project and open it in Audiotool Studio
     const handleNewProject = async () => {
         if (projectsResult.case !== 'loaded') return
         const created = await projectsResult.createProject('New Project')
@@ -20,11 +22,13 @@ function ProjectsPage({ client }: ProjectsPageProps) {
         Successfully Logged In! Welcome!
         </div>
 
+        {/* Show loading state while fetching projects */}
         {projectsResult.case === 'loading' && (
             <div className="projects-loading">
                 <p>Loading projects...</p>
             </div>
         )}
+        {/* Show error state with retry option */}
         {projectsResult.case === 'error' && (
             <div className="projects-error">
               <p>Failed to load projects: {projectsResult.error}</p>
@@ -33,6 +37,7 @@ function ProjectsPage({ client }: ProjectsPageProps) {
               </button>
             </div>
         )}
+        {/* Show projects list when loaded */}
         {projectsResult.case === 'loaded' && (
             <div className="projects-loaded">
                 <button onClick={() => {

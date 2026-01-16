@@ -24,13 +24,34 @@ export type UseProjectsResult =
 
 const PAGE_SIZE = 10;
 
+/**
+ * Fetches and manages user projects with pagination and creation.
+ *
+ * @param client - Authenticated client or null. Pass null when logged out.
+ *
+ * @example
+ * ```tsx
+ * const result = useProjects(client)
+ * if (result.case === 'loaded') {
+ *   return (
+ *     <div>
+ *       {result.projects.map(p => <div key={p.name}>{p.displayName}</div>)}
+ *       {result.hasMore && <button onClick={result.loadMore}>Load More</button>}
+ *       <button onClick={() => result.createProject('New')}>Create</button>
+ *     </div>
+ *   )
+ * }
+ * ```
+ */
 export function useProjects(client: AudiotoolClient | null): UseProjectsResult {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [nextPageToken, setNextPageToken] = useState<string | undefined>(undefined);
+  const [nextPageToken, setNextPageToken] = useState<string | undefined>(
+    undefined
+  );
   const clientRef = useRef(client);
   clientRef.current = client;
 
@@ -66,7 +87,9 @@ export function useProjects(client: AudiotoolClient | null): UseProjectsResult {
       name: p.name,
       displayName: p.displayName || "Untitled Project",
       coverUrl: p.coverUrl,
-      updateTime: p.updateTime ? new Date(Number(p.updateTime.seconds) * 1000) : null,
+      updateTime: p.updateTime
+        ? new Date(Number(p.updateTime.seconds) * 1000)
+        : null,
     }));
 
     if (pageToken) {
@@ -91,39 +114,43 @@ export function useProjects(client: AudiotoolClient | null): UseProjectsResult {
     }
   }, [nextPageToken, isLoadingMore, fetchProjects]);
 
-  const createProject = useCallback(async (displayName: string): Promise<Project | null> => {
-    const currentClient = clientRef.current;
-    if (!currentClient) return null;
+  const createProject = useCallback(
+    async (displayName: string): Promise<Project | null> => {
+      const currentClient = clientRef.current;
+      if (!currentClient) return null;
 
-    setIsCreating(true);
-    const createResponse = await currentClient.api.projectService.createProject({
-      project: { displayName },
-    });
+      setIsCreating(true);
+      const createResponse =
+        await currentClient.api.projectService.createProject({
+          project: { displayName },
+        });
 
-    if (createResponse instanceof Error) {
-      console.error("Failed to create project:", createResponse);
+      if (createResponse instanceof Error) {
+        console.error("Failed to create project:", createResponse);
+        setIsCreating(false);
+        return null;
+      }
+
+      if (createResponse.project) {
+        const newProject: Project = {
+          name: createResponse.project.name,
+          displayName: createResponse.project.displayName || displayName,
+          coverUrl: createResponse.project.coverUrl,
+          updateTime: createResponse.project.updateTime
+            ? new Date(Number(createResponse.project.updateTime.seconds) * 1000)
+            : null,
+        };
+        // Refresh the list to include the new project at the top
+        await fetchProjects();
+        setIsCreating(false);
+        return newProject;
+      }
+
       setIsCreating(false);
       return null;
-    }
-
-    if (createResponse.project) {
-      const newProject: Project = {
-        name: createResponse.project.name,
-        displayName: createResponse.project.displayName || displayName,
-        coverUrl: createResponse.project.coverUrl,
-        updateTime: createResponse.project.updateTime
-          ? new Date(Number(createResponse.project.updateTime.seconds) * 1000)
-          : null,
-      };
-      // Refresh the list to include the new project at the top
-      await fetchProjects();
-      setIsCreating(false);
-      return newProject;
-    }
-
-    setIsCreating(false);
-    return null;
-  }, [fetchProjects]);
+    },
+    [fetchProjects]
+  );
 
   useEffect(() => {
     if (client) {

@@ -6,6 +6,7 @@ interface LoginPageProps {
 }
 
 export function LoginPage({ onLogin, isLoading, error, onRetry }: LoginPageProps) {
+  // Show loading spinner while checking login status
   if (isLoading) {
     return (
       <div className="login-page">
@@ -19,6 +20,7 @@ export function LoginPage({ onLogin, isLoading, error, onRetry }: LoginPageProps
     )
   }
 
+  // Show error message with retry option if login check failed
   if (error) {
     return (
       <div className="login-page">
@@ -35,6 +37,7 @@ export function LoginPage({ onLogin, isLoading, error, onRetry }: LoginPageProps
     )
   }
 
+  // Show login button to initiate OAuth flow
   return (
     <div className="login-page">
       <div className="login-card">
