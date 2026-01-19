@@ -1,0 +1,130 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.project.v1;
+
+import "audiotool/project/v1/project_role.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+// The ProjectRoleService manages ProjectRoles.
+service ProjectRoleService {
+  // Lists all ProjectRoles for a project.
+  rpc ListProjectRoles(ListProjectRolesRequest) returns (ListProjectRolesResponse) {}
+
+  // Creates a ProjectRole.
+  rpc CreateProjectRole(CreateProjectRoleRequest) returns (CreateProjectRoleResponse) {}
+
+  // Deletes a ProjectRole.
+  rpc DeleteProjectRole(DeleteProjectRoleRequest) returns (DeleteProjectRoleResponse) {}
+
+  // Updates a ProjectRole.
+  rpc UpdateProjectRole(UpdateProjectRoleRequest) returns (UpdateProjectRoleResponse) {}
+}
+
+// Request for ProjectRoleService.ListProjectRoles.
+message ListProjectRolesRequest {
+  // Required. The project that contains the ProjectRoles, in the form of
+  // `projects/{project}`.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {child_type: "project.api.audiotool.com/Project"}
+  ];
+
+  // The maximum number of items to return.
+  int32 page_size = 2;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 3;
+
+  // The standard CEL filter.
+  //
+  // Supported fields:
+  // - project_role.name
+  // - project_role.project_name
+  // - project_role.user_name
+  string filter = 4;
+
+  // The order to sort the results by.
+  //
+  // Supported fields:
+  // - project_role.name
+  // - project_role.project_name
+  // - project_role.user_name
+  string order_by = 5;
+}
+
+// Response for ProjectRoleService.ListProjectRoles.
+message ListProjectRolesResponse {
+  // The project roles.
+  repeated ProjectRole project_roles = 1;
+
+  // Token to retrieve the next page of results, or empty if there are no more results in the
+  // list.
+  string next_page_token = 2;
+}
+
+// Request for ProjectRoleService.CreateProjectRole.
+message CreateProjectRoleRequest {
+  // Required. The project in which the role should be created, in the form of
+  // `projects/{project}`.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {child_type: "project.api.audiotool.com/Project"}
+  ];
+
+  // The ProjectRole to create.
+  //
+  // There is a maximum number of ProjectRoles that can be created for a project.
+  //
+  // The ProjectRole is opt-out.
+  ProjectRole project_role = 2;
+}
+
+// Response for ProjectRoleService.CreateProjectRole.
+message CreateProjectRoleResponse {
+  // The created project_role.
+  ProjectRole project_role = 1;
+}
+
+// Request for ProjectRoleService.DeleteProjectRole.
+message DeleteProjectRoleRequest {
+  // Required. The ProjectRole to delete, in the form of
+  // `projects/{project}/role/user/{user}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {child_type: "project.api.audiotool.com/ProjectRole"}
+  ];
+}
+
+// Response for ProjectRoleService.DeleteProjectRole.
+message DeleteProjectRoleResponse {}
+
+// Request for ProjectRoleService.UpdateProjectRole.
+message UpdateProjectRoleRequest {
+  // The ProjectRole update.
+  ProjectRole project_role = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The update mask to apply.
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+// Response for ProjectRoleService.UpdateProjectRole.
+message UpdateProjectRoleResponse {
+  // The updated ProjectRole.
+  ProjectRole project_role = 1;
+}

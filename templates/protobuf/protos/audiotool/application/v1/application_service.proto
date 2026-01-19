@@ -1,0 +1,131 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.application.v1;
+
+import "audiotool/application/v1/application.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+// The application service definition.
+service ApplicationService {
+  // Lists the applications.
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {}
+
+  // Gets an application.
+  rpc GetApplication(GetApplicationRequest) returns (GetApplicationResponse) {}
+
+  // Creates an application.
+  rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse) {}
+
+  // Updates an application.
+  rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse) {}
+
+  // Deletes an application.
+  rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {}
+
+  // Uploads a logo for an application.
+  rpc UploadLogo(UploadLogoRequest) returns (UploadLogoResponse) {}
+}
+
+// Request for ApplicationService.ListApplications.
+message ListApplicationsRequest {
+  // The standard CEL filter.
+  string filter = 1;
+}
+
+// Response for ApplicationService.ListApplications.
+message ListApplicationsResponse {
+  // The list of applications.
+  repeated Application applications = 1;
+}
+
+// Request for ApplicationService.GetApplication.
+message GetApplicationRequest {
+  // Required. The name of the application to be retrieved, in the form of `applications/{application}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "application.api.audiotool.com/Application"}
+  ];
+}
+
+// Response for ApplicationService.GetApplication.
+message GetApplicationResponse {
+  // The application.
+  Application application = 1;
+}
+
+// Request for ApplicationService.CreateApplication.
+message CreateApplicationRequest {
+  // The application to create.
+  Application application = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Response for ApplicationService.CreateApplication.
+message CreateApplicationResponse {
+  // The created application.
+  Application application = 1;
+}
+
+// Request for ApplicationService.UpdateApplication.
+message UpdateApplicationRequest {
+  // The application to update.
+  Application application = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The update mask.
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+// Response for ApplicationService.UpdateApplication.
+message UpdateApplicationResponse {
+  // The updated application.
+  Application application = 1;
+}
+
+// Request for ApplicationService.DeleteApplication.
+message DeleteApplicationRequest {
+  // Required. The name of the application to be deleted, in the form of `applications/{application}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "application.api.audiotool.com/Application"}
+  ];
+}
+
+// Response for ApplicationService.DeleteApplication.
+message DeleteApplicationResponse {}
+
+// Request for ApplicationService.UploadLogo.
+message UploadLogoRequest {
+  // Required. The name of the application to upload the logo, in the form of `applications/{application}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "application.api.audiotool.com/Application"}
+  ];
+
+  // The logo to upload. The data format will be automatically detected.
+  // the following formats are supported:
+  // - JPEG
+  // - PNG
+  // - WEBP
+  bytes data = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Response for ApplicationService.UploadLogo.
+message UploadLogoResponse {
+  // The updated application.
+  Application application = 1;
+}

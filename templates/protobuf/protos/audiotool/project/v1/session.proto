@@ -1,0 +1,39 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.project.v1;
+
+import "audiotool/project/v1/project.proto";
+
+// Session represents a running session for a project.
+message Session {
+  // Project
+  Project project = 1;
+
+  // The DocumentService URL for the session where the studio connects to.
+  string document_service_url = 2;
+
+  // The prefix URL for studio (location of assets in the CDN).
+  string studio_prefix_url = 3;
+
+  // The prefix URL for document_service (location of assets in the CDN).
+  //
+  // Within this location is the document_validator.wasm
+  string document_service_prefix_url = 4;
+
+  // The prefix URL for the audio engine (location of assets in the CDN).
+  string audio_engine_prefix_url = 5;
+}

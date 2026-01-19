@@ -1,0 +1,225 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.comment.v1;
+
+import "audiotool/comment/v1/comment.proto";
+import "audiotool/comment/v1/possible_reaction.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+// CommentService is a service that provides methods to interact with comments.
+service CommentService {
+  // ListComments returns a list of messages for a channel.
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsResponse) {}
+
+  // CreateComment creates a comment.
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse) {}
+
+  // GetComment returns a comment.
+  rpc GetComment(GetCommentRequest) returns (GetCommentResponse) {}
+
+  // UpdateComment updates a comment.
+  rpc UpdateComment(UpdateCommentRequest) returns (UpdateCommentResponse) {}
+
+  // DeleteComment deletes a comment.
+  rpc DeleteComment(DeleteCommentRequest) returns (DeleteCommentResponse) {}
+
+  // ListPossibleReactions returns a list of possible reactions.
+  rpc ListPossibleReactions(ListPossibleReactionsRequest) returns (ListPossibleReactionsResponse) {}
+
+  // AddReaction adds a reaction to a comment.
+  rpc AddReaction(AddReactionRequest) returns (AddReactionResponse) {}
+
+  // RemoveReaction deletes a reaction from a comment.
+  rpc RemoveReaction(RemoveReactionRequest) returns (RemoveReactionResponse) {}
+}
+
+// ListCommentsRequest is the request object for CommentService.ListComments.
+message ListCommentsRequest {
+  // Required. The parent that contains the list of comments, the form is defined in the
+  // `comment.api.audiotool.com/Comment` message option.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {child_type: "comment.api.audiotool.com/Comment"}
+  ];
+
+  // The maximum number of items to return.
+  int32 page_size = 2;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 3;
+
+  // The standard CEL filter.
+  //
+  // Supported fields:
+  // - comment.name
+  // - comment.creator_name
+  // - comment.create_time
+  // - comment.update_time
+  string filter = 4;
+
+  // The order to sort the results by.
+  //
+  // Supported fields:
+  // - comment.name
+  // - comment.creator_name
+  // - comment.create_time
+  // - comment.update_time
+  string order_by = 5;
+
+  // Whether to hide the children of the comments.
+  // e.g. a query for
+  // pattern: "tracks/track-id/comments/foo"
+  // will return the comments of the track, but not the comments of the comments:
+  // pattern: "tracks/{track}/comments/{parent_comment}/comments/{comment}"
+  bool hide_children = 6;
+}
+
+// ListCommentsResponse is the response object for CommentService.ListComments.
+message ListCommentsResponse {
+  // The comments.
+  repeated Comment comments = 1;
+
+  // Token to retrieve the next page of results, or empty if there are no more results in the
+  // list.
+  string next_page_token = 2;
+}
+
+// CreateCommentRequest is the request object for CommentService.CreateComment.
+message CreateCommentRequest {
+  // Required. The parent that contains the list of comments, the possible parents are defined in
+  // the resource_reference message option.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {child_type: "comment.api.audiotool.com/Comment"}
+  ];
+
+  // The message to create.
+  Comment comment = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// CreateCommentResponse is the response object for CommentService.CreateComment.
+message CreateCommentResponse {
+  // The created comment.
+  Comment comment = 1;
+}
+
+// GetCommentRequest is the request object for CommentService.GetComment.
+message GetCommentRequest {
+  // Required. The name of the comment to be retrieved, in the form defined in the
+  // `comment.api.audiotool.com/Comment` message option.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "comment.api.audiotool.com/Comment"}
+  ];
+}
+
+// GetCommentResponse is the response object for CommentService.GetComment.
+message GetCommentResponse {
+  // The message.
+  Comment comment = 1;
+}
+
+// UpdateCommentRequest is the request object for CommentService.UpdateComment.
+message UpdateCommentRequest {
+  // The comment to update.
+  Comment comment = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The fields to update.
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+// UpdateCommentResponse is the response object for CommentService.UpdateComment.
+message UpdateCommentResponse {
+  // The updated comment.
+  Comment comment = 1;
+}
+
+// DeleteCommentRequest is the request object for CommentService.DeleteComment.
+message DeleteCommentRequest {
+  // Required. The name of comment to be deleted, in the form defined in the
+  // `comment.api.audiotool.com/Comment` message option.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "comment.api.audiotool.com/Comment"}
+  ];
+}
+
+// DeleteCommentResponse is the response object for CommentService.DeleteComment.
+message DeleteCommentResponse {}
+
+// ListPossibleReactionsRequest is the request object for CommentService.ListPossibleReactions.
+message ListPossibleReactionsRequest {
+  // reserved for future use as we may want to filter the reactions by some criteria (parents).
+  reserved 1;
+
+  // The maximum number of items to return.
+  int32 page_size = 2;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 3;
+
+  // The standard CEL filter.
+  //
+  // Currently ignored. Reserved for future use.
+  string filter = 4;
+
+  // The order to sort the results by.
+  //
+  // Currently ignored. Reserved for future use.
+  string order_by = 5;
+}
+
+// ListPossibleReactionsResponse is the response object for CommentService.ListPossibleReactions.
+message ListPossibleReactionsResponse {
+  // The possible reactions.
+  repeated PossibleReaction possible_reactions = 1;
+
+  // The URL prefix for the reaction images.
+  string url_prefix = 2;
+}
+
+// AddReactionRequest is the request object for CommentService.AddReaction.
+message AddReactionRequest {
+  // The reaction to create.
+  string reaction_name = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The comment to create the reaction for.
+  string comment_name = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// AddReactionResponse is the response object for CommentService.AddReaction.
+message AddReactionResponse {
+  // The comment with the added reaction.
+  Comment comment = 1;
+}
+
+// RemoveReactionRequest is the request object for CommentService.RemoveReaction.
+message RemoveReactionRequest {
+  // The reaction to delete.
+  string reaction_name = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The message comment to delete the reaction for.
+  string comment_name = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// RemoveReactionResponse is the response object for CommentService.RemoveReaction.
+message RemoveReactionResponse {
+  // The comment with the removed reaction.
+  Comment comment = 1;
+}

@@ -1,0 +1,192 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.user.v1;
+
+import "audiotool/user/v1/settings.proto";
+import "audiotool/user/v1/user.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+// The users service definition.
+service UserService {
+  // Lists the users.
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
+
+  // Gets a user.
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+
+  // Delete a user.
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+
+  // Update a user.
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+
+  // Get the settings of a user.
+  rpc GetSettings(GetSettingsRequest) returns (GetSettingsResponse) {}
+
+  // Update the settings of a user.
+  rpc UpdateSettings(UpdateSettingsRequest) returns (UpdateSettingsResponse) {}
+
+  // Upload an avatar for the logged in user.
+  rpc UploadAvatar(UploadAvatarRequest) returns (UploadAvatarResponse) {}
+}
+
+// Request for UserService.ListUsers.
+message ListUsersRequest {
+  // The standard CEL filter.
+  //
+  // Supported fields:
+  // - user.name
+  // - user.display_name
+  // - user.create_time
+  // - user.description
+  // - user.tags
+  // - user.links
+  // - user.num_tracks
+  // - user.num_albums
+  // - user.num_followers
+  // - user.num_following
+  string filter = 1;
+
+  // The maximum number of items to return.
+  int32 page_size = 2;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 3;
+
+  // The order to list results by.
+  //
+  // Supported fields:
+  // - user.name
+  // - user.display_name
+  // - user.create_time
+  // - user.description
+  // - user.tags
+  // - user.links
+  // - user.num_tracks
+  // - user.num_albums
+  // - user.num_followers
+  // - user.num_following
+  string order_by = 4;
+}
+
+// Response for UserService.ListUsers.
+message ListUsersResponse {
+  // The list of Albums
+  repeated User users = 1;
+
+  // Token to retrieve the next page of results, or empty if there are no more results in the
+  // list.
+  string next_page_token = 2;
+}
+
+// Request for UserService.GetUser.
+message GetUserRequest {
+  // Required. The name of the user to be retrieved, in the form  of `users/{user}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "user.api.audiotool.com/User"}
+  ];
+}
+
+// Response for UserService.GetUser.
+message GetUserResponse {
+  // The user.
+  User user = 1;
+}
+
+// Request for UserService.DeleteUser.
+message DeleteUserRequest {
+  // Required. The name of the user to be deleted, in the form  of `users/{user}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "user.api.audiotool.com/User"}
+  ];
+}
+
+// Response for UserService.DeleteUser.
+message DeleteUserResponse {
+  // The user.
+  User user = 1;
+}
+
+// Request for UserService.UpdateUser.
+message UpdateUserRequest {
+  // The user to update.
+  User user = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The update mask
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+// Response for UserService.UpdateUser.
+message UpdateUserResponse {
+  // The user.
+  User user = 1;
+}
+
+// Request for UserService.GetSettings.
+message GetSettingsRequest {
+  // The name of the settings resource.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "user.api.audiotool.com/User"}
+  ];
+}
+
+// Response for UserService.GetSettings.
+message GetSettingsResponse {
+  // The settings of the user.
+  Settings settings = 1;
+}
+
+// Request for UserService.UpdateSettings.
+message UpdateSettingsRequest {
+  // The name of the settings resource.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "user.api.audiotool.com/User"}
+  ];
+  // The settings of the user.
+  Settings settings = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The update mask to apply to the settings.
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+// Response for UserService.UpdateSettings.
+message UpdateSettingsResponse {
+  // The settings of the user.
+  Settings settings = 1;
+}
+
+// Request for UserService.UploadAvatar
+message UploadAvatarRequest {
+  // The sample to upload. The data format will be automatically detected.
+  // the following formats are supported:
+  // - JPEG
+  // - PNG
+  // - WEBP
+  bytes data = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Response for UserService.UploadAvatar
+message UploadAvatarResponse {
+  // Location of avatar that was uploaded
+  string avatar_url = 1;
+}

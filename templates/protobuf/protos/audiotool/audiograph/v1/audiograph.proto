@@ -1,0 +1,39 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.audiograph.v1;
+
+// Graph represents a single graph of an audiograph.
+message Graph {
+  // The values will be normalized to the range of a uint32.
+  //
+  // On the server side, a Root Mean Square (RMS) value of the audio signal is calculated.
+  // The RMS value is then normalized to the range of a uint32.
+  //
+  // (It will not be scaled up to the maximum scale of a uint32.)
+  repeated uint32 values = 1;
+}
+
+// Audiograph represents a collection of audio nodes and connections between them.
+message Audiograph {
+  // The name of the resource the graph belongs to (track or sample).
+  string resource_name = 1;
+
+  // Depending on the requested audiograph configuration you will get:
+  // one graph if you requested MONO
+  // two graphs if you requested STEREO (index 0 is left, index 1 is right)
+  repeated Graph graphs = 2;
+}

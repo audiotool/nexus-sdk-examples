@@ -1,0 +1,114 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.application.v1;
+
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/timestamp.proto";
+
+// The mode of the application.
+enum ApplicationMode {
+  // Unspecified mode.
+  APPLICATION_MODE_UNSPECIFIED = 0;
+
+  // The application is in development mode.
+  APPLICATION_MODE_DEVELOPMENT = 1;
+
+  // The application is published and listed in the public application list.
+  APPLICATION_MODE_PUBLISHED = 2;
+}
+
+// An application is a resource that represents a single application.
+message Application {
+  option (google.api.resource) = {
+    type: "application.api.audiotool.com/Application"
+    pattern: "applications/{application}"
+    singular: "application"
+    plural: "applications"
+  };
+
+  // The name of the application.
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // The display name of the application.
+  string display_name = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The discription of the application.
+  string description = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // The creation time of the application.
+  google.protobuf.Timestamp create_time = 4 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The update time of the application.
+  google.protobuf.Timestamp update_time = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The website URL of the application.
+  string website_url = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // Background color of the application.
+  // The following requirements must be followed when defining your redirect URI:
+  // - Use HTTPS for your redirect URI, unless you are using a loopback address, when HTTP is permitted.
+  // - Using aloopback address, use the explicit IPv4 or IPv6, like http://127.0.0.1:PORT or
+  // http://[::1]:PORT as your redirect URI - the port is mandatory.
+  // - 'localhost' is not allowed as redirect URI.
+  //
+  // Here are some examples of valid redirect URIs:
+  // - https://example.com/callback
+  // - http://127.0.0.1:3000/callback
+  // - http://[::1]:3000/callback
+  repeated string redirect_uris = 7 [(google.api.field_behavior) = REQUIRED];
+
+  // The creator of the application.
+  string creator_name = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The logo URL of the application.
+  //
+  // The logo uri must be uplodated due ApplicationService.UploadLogo.
+  string logo_uri = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The mode of the application.
+  ApplicationMode mode = 10 [(google.api.field_behavior) = REQUIRED];
+
+  // The scopes of the application.
+  //
+  // The scopes are the permissions that the application requests from the user.
+  //
+  // Here is a list of possible scopes:
+  // | Name     | Verb   | Slug            | Implied Scopes             |
+  // |----------|--------|-----------------|----------------------------|
+  // | favorite | delete | favorite:delete |                            |
+  // |          | write  | favorite:write  |                            |
+  // | offline  |        | offline         |                            |
+  // | playlist | delete | playlist:delete |                            |
+  // |          | read   | playlist:read   |                            |
+  // |          | write  | playlist:write  |                            |
+  // | preset   | delete | preset:delete   |                            |
+  // |          | read   | preset:read     |                            |
+  // |          | write  | preset:write    |                            |
+  // | project  | read   | project:read    |  preset:read, sample:read  |
+  // |          | write  | project:write   |  preset:write, sample:write|
+  // | sample   | delete | sample:delete   |                            |
+  // |          | read   | sample:read     |                            |
+  // |          | write  | sample:write    |                            |
+  // | user     | read   | user:read       |                            |
+  repeated string scopes = 11 [(google.api.field_behavior) = REQUIRED];
+
+  // The client id of the application.
+  //
+  // This is used for authorization with OIDC.
+  string client_id = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+}

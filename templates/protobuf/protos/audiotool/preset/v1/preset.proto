@@ -1,0 +1,220 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.preset.v1;
+
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/timestamp.proto";
+
+// PresetDeviceType is the type of device used.
+enum PresetDeviceType {
+  // Unspecified device type.
+  PRESET_DEVICE_TYPE_UNSPECIFIED = 0;
+
+  // Auto Filter device type.
+  PRESET_DEVICE_TYPE_AUTO_FILTER = 1;
+
+  // Band Splitter device type.
+  PRESET_DEVICE_TYPE_BAND_SPLITTER = 2;
+
+  // Bassline device type.
+  PRESET_DEVICE_TYPE_BASSLINE = 3;
+
+  // Beatbox8 device type.
+  PRESET_DEVICE_TYPE_BEATBOX8 = 4;
+
+  // Beatbox9 device type.
+  PRESET_DEVICE_TYPE_BEATBOX9 = 5;
+
+  // Crossfader device type.
+  PRESET_DEVICE_TYPE_CROSSFADER = 6;
+
+  // Curve device type.
+  PRESET_DEVICE_TYPE_CURVE = 7;
+
+  // Exciter device type.
+  PRESET_DEVICE_TYPE_EXCITER = 8;
+
+  // Graphical EQ device type.
+  PRESET_DEVICE_TYPE_GRAPHICAL_EQ = 9;
+
+  // Gravity device type.
+  PRESET_DEVICE_TYPE_GRAVITY = 10;
+
+  // Heisenberg device type.
+  PRESET_DEVICE_TYPE_HEISENBERG = 11;
+
+  // Helmholtz device type.
+  PRESET_DEVICE_TYPE_HELMHOLTZ = 12;
+
+  // Machiniste device type.
+  PRESET_DEVICE_TYPE_MACHINISTE = 13;
+
+  // Matrix device type.
+  PRESET_DEVICE_TYPE_MATRIX = 14;
+
+  // Note Splitter device type.
+  PRESET_DEVICE_TYPE_NOTE_SPLITTER = 15;
+
+  // Panorama device type.
+  PRESET_DEVICE_TYPE_PANORAMA = 16;
+
+  // Pulsar device type.
+  PRESET_DEVICE_TYPE_PULSAR = 17;
+
+  // Pulverisateur device type.
+  PRESET_DEVICE_TYPE_PULVERISATEUR = 18;
+
+  // Quantum device type.
+  PRESET_DEVICE_TYPE_QUANTUM = 19;
+
+  // Quasar device type.
+  PRESET_DEVICE_TYPE_QUASAR = 20;
+
+  // Rasselbock device type.
+  PRESET_DEVICE_TYPE_RASSELBOCK = 21;
+
+  // Space device type.
+  PRESET_DEVICE_TYPE_SPACE = 22;
+
+  // Stereo Enhancer device type.
+  PRESET_DEVICE_TYPE_STEREO_ENHANCER = 23;
+
+  // Stompbox Chorus device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_CHORUS = 24;
+
+  // Stompbox Compressor device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_COMPRESSOR = 25;
+
+  // Stompbox Crusher device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_CRUSHER = 26;
+
+  // Stompbox Delay device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_DELAY = 27;
+
+  // Stompbox Flanger device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_FLANGER = 28;
+
+  // Stompbox Gate device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_GATE = 29;
+
+  // Stompbox Parametric Equalizer device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_PARAMETRIC_EQUALIZER = 30;
+
+  // Stompbox Phaser device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_PHASER = 31;
+
+  // Stompbox Pitch Delay device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_PITCH_DELAY = 32;
+
+  // Stompbox Reverb device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_REVERB = 33;
+
+  // Stompbox Slope device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_SLOPE = 34;
+
+  // Stompbox Stereo Detune device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_STEREO_DETUNE = 35;
+
+  // Stompbox Tube device type.
+  PRESET_DEVICE_TYPE_STOMPBOX_TUBE = 36;
+
+  // ToneMatrix device type.
+  PRESET_DEVICE_TYPE_TONEMATRIX = 37;
+
+  // Waveshaper device type.
+  PRESET_DEVICE_TYPE_WAVESHAPER = 38;
+
+  // Gakki device type.
+  PRESET_DEVICE_TYPE_GAKKI = 39;
+}
+
+// PresetUsage controls the visibility of the Preset and how the uploader allows the usage.
+enum PresetUsage {
+  // Unspecified Preset usage.
+  PRESET_USAGE_UNSPECIFIED = 0;
+
+  // The Preset is public.
+  PRESET_USAGE_PUBLIC = 1;
+
+  // The Preset is allowed to be used (e.g. for remixes) but hidden from listing/searching.
+  //
+  // You can retrieve the presets by a GET request; they are exposed via the tracks API.
+  PRESET_USAGE_UNLISTED = 2;
+
+  // The Preset is private and only visible to the owner.
+  PRESET_USAGE_PRIVATE = 3;
+}
+
+// Preset is a resource representing a single Preset.
+message Preset {
+  option (google.api.resource) = {
+    type: "preset.api.audiotool.com/Preset"
+    pattern: "presets/{preset}"
+    singular: "preset"
+    plural: "presets"
+  };
+
+  // The Preset name.
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // The display name of the Preset.
+  string display_name = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The description of the Preset.
+  string description = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // The owner of the Preset in the format of `users/{user}`.
+  string owner_name = 4 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Whether the authed user liked the Preset.
+  //
+  // This is only exposed if the user is authenticated. The user can like a Preset via
+  // Favorite API.
+  bool favorited_by_user = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The number of favorites of the Preset.
+  int32 num_favorites = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The number of usages of the Preset in a track. If a Preset is used in a track, the usage will
+  // be increased. On the other hand the number will not be decreased if the a preset is removed or
+  // changed in a track.
+  int32 num_usages = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Timestamp when this Preset was created.
+  google.protobuf.Timestamp create_time = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Timestamp when this Preset was last updated.
+  //
+  // The underlying audio can't be changed. Only some metadata (of this message) can be changed.
+  google.protobuf.Timestamp update_time = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The usage of the Preset.
+  PresetUsage usage = 10 [(google.api.field_behavior) = REQUIRED];
+
+  // The tags of the Preset.
+  repeated string tags = 11 [(google.api.field_behavior) = OPTIONAL];
+
+  // The type of devices used.
+  //
+  // This contains the list of devices used in the data blob.
+  PresetDeviceType device_type = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // URL pointing to the serialized preset data. This is a serialized proto.Any blob
+  // produced by the document-service.
+  string data_url = 13 [(google.api.field_behavior) = IMMUTABLE];
+}

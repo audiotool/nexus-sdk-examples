@@ -1,0 +1,160 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.projecttemplate.v1;
+
+import "audiotool/projecttemplate/v1/project_template.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+
+// The ProjectTemplateService provides methods to manage project templates.
+service ProjectTemplateService {
+  // List the ProjectTemplates.option
+  rpc ListProjectTemplateTemplates(ListProjectTemplatesRequest) returns (ListProjectTemplatesResponse) {}
+
+  // Get a Project Template.
+  rpc GetProjectTemplateTemplate(GetProjectTemplateRequest) returns (GetProjectTemplateResponse) {}
+
+  // Create a Project Template.
+  rpc CreateProjectTemplate(CreateProjectTemplateRequest) returns (CreateProjectTemplateResponse) {}
+
+  // Update a Project Template.
+  rpc UpdateProjectTemplate(UpdateProjectTemplateRequest) returns (UpdateProjectTemplateResponse) {}
+
+  // Delete a Project Template.
+  rpc DeleteProjectTemplate(DeleteProjectTemplateRequest) returns (DeleteProjectTemplateResponse) {}
+}
+
+// Request for ProjectTemplateService.ListProjectTemplates.
+message ListProjectTemplatesRequest {
+  // The standard CEL filter.
+  //
+  // Supported fields:
+  // - project_template.name
+  // - project_template.creator_name
+  // - project_template.display_name
+  // - project_template.description
+  // - project_template.create_time
+  // - project_template.update_time
+  // - project_template.tags
+  // - project_template.bpm
+  // - project_template.favorited_by_user
+  // - project_template.num_favorites
+  // - project_template.num_usages
+  string filter = 1;
+
+  // The maximum number of items to return.
+  int32 page_size = 2;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 3;
+
+  // The order to sort the results by.
+  //
+  // Supported fields:
+  // - project_template.name
+  // - project_template.user_names
+  // - project_template.creator_name
+  // - project_template.display_name
+  // - project_template.description
+  // - project_template.create_time
+  // - project_template.update_time
+  // - project_template.tags
+  // - project_template.bpm
+  // - project_template.favorited_by_user
+  // - project_template.num_favorites
+  // - project_template.num_usages
+  string order_by = 4;
+}
+
+// Response for ProjectTemplateService.ListProjectTemplates.
+message ListProjectTemplatesResponse {
+  // The list of Project Templates.
+  repeated ProjectTemplate project_templates = 1;
+
+  // Token to retrieve the next page of results, or empty if there are no more results in the
+  // list.
+  string next_page_token = 2;
+}
+
+// Request for ProjectTemplateService.GetProjectTemplate.
+message GetProjectTemplateRequest {
+  // Required. The name of the Project Template to get, in the form of `project_templates/{ProjectTemplate_id}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "projecttemplate.api.audiotool.com/ProjectTemplate"}
+  ];
+}
+
+// Response for ProjectTemplateService.GetProjectTemplate.
+message GetProjectTemplateResponse {
+  // The Project Template.
+  ProjectTemplate project_template = 1;
+}
+
+// Request for ProjectTemplateService.CreateProjectTemplate.
+message CreateProjectTemplateRequest {
+  // The Project Template to create.
+  ProjectTemplate project_template = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Protobuf message that will be uploaded to the CDN to create the resulting Project Template
+  // Accepted Messages - TBD
+  google.protobuf.Any visual_state = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Response for ProjectTemplateService.CreateProjectTemplate.
+message CreateProjectTemplateResponse {
+  // The created Project Template.
+  ProjectTemplate project_template = 1;
+}
+
+// Request for ProjectTemplateService.UpdateProjectTemplate.
+message UpdateProjectTemplateRequest {
+  // The Project Template to update.
+  ProjectTemplate project_template = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Protobuf message that will be uploaded to the CDN to replace the old template. Ignored if blank.
+  // Accepted Messages - TBD
+  google.protobuf.Any visual_state = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The update mask to apply to the Project Template.
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+// Response for ProjectTemplateService.UpdateProjectTemplate.
+message UpdateProjectTemplateResponse {
+  // The updated Project Template.
+  ProjectTemplate project_template = 1;
+}
+
+// Request for ProjectTemplateService.DeleteProjectTemplate.
+//
+// If a track is associated with the ProjectTemplate, the ProjectTemplate can't be deleted. The track has to be
+// deleted first.
+//
+// If another ProjectTemplate was remixed of this ProjectTemplate
+message DeleteProjectTemplateRequest {
+  // Required. The name of the ProjectTemplate to be deleted, in the form of `ProjectTemplates/{ProjectTemplate_id}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "ProjectTemplate.api.audiotool.com/ProjectTemplate"}
+  ];
+}
+
+// Response for ProjectTemplateService.DeleteProjectTemplate.
+message DeleteProjectTemplateResponse {}
