@@ -1,0 +1,148 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.track.v1;
+
+import "audiotool/track/v1/track.proto";
+import "audiotool/track/v1/track_listen_by_user.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+
+// The track service definition.
+service TrackService {
+  // Lists the tracks.
+  rpc ListTracks(ListTracksRequest) returns (ListTracksResponse) {}
+
+  // Get a track.
+  rpc GetTrack(GetTrackRequest) returns (GetTrackResponse) {}
+
+  // Delete a track.
+  rpc DeleteTrack(DeleteTrackRequest) returns (DeleteTrackResponse) {}
+
+  // List the listeners of a track.
+  //
+  // This can be deactivated by the users settings so the listens are not tracked.
+  rpc ListTrackListenByUser(ListTrackListenByUserRequest) returns (ListTrackListenByUserResponse) {}
+}
+
+// Request for TrackService.ListTracks.
+message ListTracksRequest {
+  // The standard CEL filter.
+  //
+  // Supported fields:
+  // - track.name
+  // - track.display_name
+  // - track.description
+  // - track.tags
+  // - track.genre_name
+  // - track.create_time
+  // - track.num_favorites
+  // - track.contributor_names
+  // - track.remix_of
+  string filter = 1;
+
+  // The maximum number of items to return.
+  int32 page_size = 2;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 3;
+
+  // The order to list results by.
+  //
+  // Supported fields:
+  // - track.name
+  // - track.display_name
+  // - track.description
+  // - track.tags
+  // - track.genre_name
+  // - track.create_time
+  // - track.num_favorites
+  // - track.contributor_names
+  // - track.remix_of
+  string order_by = 4;
+}
+
+// Response for TrackService.ListTracks.
+message ListTracksResponse {
+  // The list of tracks.
+  repeated Track tracks = 1;
+
+  // Token to retrieve the next page of results, or empty if there are no more results in the
+  // list.
+  string next_page_token = 2;
+}
+
+// Request for TrackService.GetTrack.
+message GetTrackRequest {
+  // Required. The name of the track to be retrieved, in the form  of `tracks/{track}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "track.api.audiotool.com/Track"}
+  ];
+}
+
+// Response for TrackService.GetTrack.
+message GetTrackResponse {
+  // The track.
+  Track track = 1;
+}
+
+// Request for TrackService.DeleteTrack.
+message DeleteTrackRequest {
+  // Required. The name of the track to be deleted, in the form  of `tracks/{track}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "track.api.audiotool.com/Track"}
+  ];
+}
+
+// Response for TrackService.DeleteTrack.
+message DeleteTrackResponse {}
+
+// Request for TrackService.ListTracklisten.
+message ListTrackListenByUserRequest {
+  // The name of the track to list the listeners of.
+  string track_name = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The standard list filter (CEL).
+  //
+  // The following fields are supported:
+  // - listen.user_name
+  // - listen.listen_time
+  string filter = 2;
+
+  // The maximum number of items to return.
+  int32 page_size = 3;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 4;
+
+  // The order to sort the listeners by.
+  // The following fields are supported:
+  // - listen.user_name
+  // - listen.listen_time
+  string order_by = 5;
+}
+
+// Response for TrackService.ListTracklisten.
+message ListTrackListenByUserResponse {
+  // The list of listeners.
+  repeated TrackListenByUser listens = 1;
+
+  // Token to retrieve the next page of results, or empty if there are no more results in the
+  // list.
+  string next_page_token = 2;
+}

@@ -1,0 +1,230 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.event.v1;
+
+import "audiotool/comment/v1/comment.proto";
+import "google/longrunning/operations.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+// An event that is sent to a channel.
+message Event {
+  // The ID of the event.
+  string id = 1;
+
+  // The time the event was created.
+  google.protobuf.Timestamp create_time = 2;
+
+  // The type of the event.
+  oneof event {
+    // A project invitation was granted.
+    // The user got a role assigned
+    //
+    // (refers to: ProjectRoleService)
+    ProjectAccessGranted project_access_granted = 3;
+
+    // A project project where the user has access to went online
+    //
+    // (refers to: ProjectRoleService)
+    UserJoinedSession user_joined_session = 4;
+
+    // A project project where the user has access to went online
+    //
+    // (refers to: ProjectRoleService)
+    UserLeftSession user_left_session = 5;
+
+    // The conversion of a sample is done.
+    SampleConvertDone sample_convert_done = 6;
+
+    // A project was synced with a track.
+    //
+    // (refers to: ProjectService)
+    SyncedTrack synced_track = 7;
+
+    // A track that has been favorited by a user.
+    //
+    // (refers to: FavoriteService)
+    TrackFavorited track_favorited = 8;
+
+    // A sample that has been favorited by a user.
+    //
+    // (refers to: FavoriteService)
+    SampleFavorited sample_favorited = 9;
+
+    // A preset that has been favorited by a user.
+    //
+    // (refers to: FavoriteService)
+    PresetFavorited preset_favorited = 10;
+
+    // A playlist that has been favorited by a user.
+    //
+    // (refers to: FavoriteService)
+    PlaylistFavorited playlist_favorited = 11;
+
+    // A user that is now following
+    //
+    // (refers to: FavoriteService)
+    UserFollowing user_following = 12;
+
+    // An update for a longrunning operation.
+    google.longrunning.Operation operation = 13;
+
+    // A user commenteded on resource
+    //
+    // (refers to: CommentService)
+    UserCommented user_commented = 14;
+
+    // A user updated a comment
+    //
+    // (refers to: CommentService)
+    UserUpdatedComment user_updated_comment = 15;
+
+    // A user deleted a comment
+    //
+    // (refers to: CommentService)
+    DeletedComment deleted_comment = 16;
+  }
+}
+
+// The event that a project was synced with a track.
+message ProjectAccessGranted {
+  // contains: audiotool.project.v1.ProjectRole
+  google.protobuf.Any project_role = 1;
+
+  // contains: audiotool.project.v1.Project
+  google.protobuf.Any project = 2;
+}
+
+// The event that a project was synced with a track.
+message SyncedTrack {
+  // The project that was synced.
+  string project_name = 1;
+
+  // contains: audiotool.track.v1.Track
+  google.protobuf.Any track = 2;
+}
+
+// The event that a sample conversion is done.
+message SampleConvertDone {
+  // The name of the sample that was converted.
+  string sample_name = 1;
+
+  // The type of error that happened during the conversion if any.
+  SampleConvertDoneErrorType error = 2;
+}
+
+// The type of error that happened during the conversion if any.
+enum SampleConvertDoneErrorType {
+  // Unspecified error.
+  SAMPLE_CONVERT_DONE_ERROR_TYPE_UNSPECIFIED = 0;
+
+  // No error.
+  SAMPLE_CONVERT_DONE_ERROR_TYPE_NONE = 1;
+
+  // Invalid input, data is missing or invalid.
+  SAMPLE_CONVERT_DONE_ERROR_TYPE_INVALID_INPUT = 2;
+
+  // Internal error.
+  SAMPLE_CONVERT_DONE_ERROR_TYPE_INTERNAL = 3;
+}
+
+// The event that a user joined a session.
+message UserJoinedSession {
+  // The user that joined the session.
+  string user_name = 1;
+
+  // The project that the user joined.
+  string project_name = 2;
+
+  // contains: audiotool.project.v1.Project
+  google.protobuf.Any project = 3;
+}
+
+// The event that a user left a session.
+message UserLeftSession {
+  // The user that left the session.
+  string user_name = 1;
+
+  // The project that the user left.
+  string project_name = 2;
+
+  // contains: audiotool.project.v1.Project
+  google.protobuf.Any project = 3;
+}
+
+// The event that a user has favorited a track
+message TrackFavorited {
+  // The track that was favorited.
+  string name = 1;
+
+  // The user who favorited the track.
+  string user_name = 2;
+}
+
+// The event that a user has favorited a sample
+message SampleFavorited {
+  // The sample that was favorited.
+  string name = 1;
+
+  // The user who favorited the sample.
+  string user_name = 2;
+}
+
+// The event that a user has favorited a preset
+message PresetFavorited {
+  // The preset that was favorited.
+  string name = 1;
+
+  // The user who favorited the preset.
+  string user_name = 2;
+}
+
+// The event that a user has favorited a playlist
+message PlaylistFavorited {
+  // The playlist that was favorited.
+  string name = 1;
+
+  // The user who favorited the playlist.
+  string user_name = 2;
+}
+
+// The event that a user has started following
+message UserFollowing {
+  // The user who is now following.
+  string user_name = 1;
+}
+
+// The event that a user has commented
+message UserCommented {
+  // The user comment
+  audiotool.comment.v1.Comment comment = 1;
+}
+
+// The event that a user has updated their comment
+message UserUpdatedComment {
+  // The comment state before the update
+  audiotool.comment.v1.Comment before = 1;
+
+  // The comment state now
+  audiotool.comment.v1.Comment now = 2;
+}
+
+// The event that a comment has been deleted
+message DeletedComment {
+  // The comment deleted
+  audiotool.comment.v1.Comment comment = 2;
+}

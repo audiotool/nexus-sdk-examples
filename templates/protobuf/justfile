@@ -1,0 +1,12 @@
+codegen:
+    cd protos && buf dep update && buf generate .
+
+
+
+# this won't work on your machine
+update-protos:
+    cp -r ../../../developer/assets/protos/* protos/.
+
+
+run:
+    cd src && uv run main.py

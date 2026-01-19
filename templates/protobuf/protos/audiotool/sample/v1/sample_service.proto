@@ -1,0 +1,241 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.sample.v1;
+
+import "audiotool/sample/v1/sample.proto";
+import "audiotool/sample/v1/sample_event.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/field_mask.proto";
+
+// The samples service definition.
+service SampleService {
+  // Lists the samples.
+  rpc ListSamples(ListSamplesRequest) returns (ListSamplesResponse) {}
+
+  // Create a sample.
+  rpc CreateSample(CreateSampleRequest) returns (CreateSampleResponse) {}
+
+  // UploadSampleFinished is called from the client when the upload of a sample is finished so the
+  // server can start processing the Data. An URL for the upload will be returned by CreateSample.
+  rpc UploadSampleFinished(UploadSampleFinishedRequest) returns (UploadSampleFinishedResponse) {}
+
+  // Gets a sample.
+  rpc GetSample(GetSampleRequest) returns (GetSampleResponse) {}
+
+  // Updates a sample.
+  rpc UpdateSample(UpdateSampleRequest) returns (UpdateSampleResponse) {}
+
+  // Deletes a sample.
+  //
+  // A sample can be deleted if it is not used by a project (document-service) and if the user has
+  // the correct permissions.
+  rpc DeleteSample(DeleteSampleRequest) returns (DeleteSampleResponse) {}
+
+  // Listen for samples.
+  //
+  // This is a server streaming RPC. The client sends a request and gets a stream of responses.
+  // This can be used when a sample is created and announced as being uploaded in a
+  // collaborative session, the other clients can listen for the sample and start processing it as
+  // soon as it is ready.
+  //
+  // The server will have a history which lasts for a certain time frame and size and sends out
+  // historical events to the client. This makes it easy to retrieve non-racy events.
+  rpc Listen(ListenRequest) returns (stream ListenResponse) {}
+}
+
+// Request for SampleService.ListSamples.
+message ListSamplesRequest {
+  // The maximum number of items to return.
+  int32 page_size = 2;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 3;
+
+  // The standard CEL filter.
+  //
+  // Supported fields:
+  // - sample.name
+  // - sample.display_name
+  // - sample.description
+  // - sample.owner_name
+  // - sample.num_favorites
+  // - sample.num_usages
+  // - sample.bpm
+  // - sample.sample_type
+  // - sample.play_duration
+  // - sample.create_time
+  // - sample.update_time
+  // - sample.clearance
+  // - sample.tags
+  // - sample.favorited_by_user
+  string filter = 4;
+
+  // The order to sort the results by.
+  //
+  // Supported fields:
+  // - sample.name
+  // - sample.display_name
+  // - sample.description
+  // - sample.owner_name
+  // - sample.num_favorites
+  // - sample.num_usages
+  // - sample.bpm
+  // - sample.sample_type
+  // - sample.play_duration
+  // - sample.create_time
+  // - sample.update_time
+  // - sample.clearance
+  // - sample.tags
+  string order_by = 5;
+
+  // An additional filter for matching text metadata
+  //
+  // Examples:
+  // 'kepz & dub' : returns results matching both keywords
+  // 'guitar & (jazz | funk)' : returns guitar samples tagged with either jazz or funk
+  // '!bass & guitar & (jazz | funk)' : same as above but excludes samples matching "bass"
+  string text_search = 6;
+}
+
+// Response for SampleService.ListSamples.
+message ListSamplesResponse {
+  // The list of samples.
+  repeated Sample samples = 1;
+
+  // Token to retrieve the next page of results, or empty if there are no more results in the
+  // list.
+  string next_page_token = 2;
+}
+
+// Request for SampleService.CreateSample.
+message CreateSampleRequest {
+  // The sample to create.
+  //
+  // A client can provide a sample ID ahead of time. If provided, the server will use this ID
+  // instead of generating a new one.
+  //
+  // The sample ID must be unique and in the pattern of `samples/{uuid-v4}`.
+  //
+  // If the sample ID is already in use there are two possible outcomes:
+  // - the CreateSample RPC will error out
+  // - Later on Processing of the data will fail (UploadSampleFinished and the async processing)
+  Sample sample = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Message containing the upload URL and values to be sent as FormData.
+message SampleUploadEndpoint {
+  // The URL to upload the sample to. This represents the Base URL to make a request to.
+  // The request must be sent using a PUT request
+  //
+  // If the client is finished with the upload it must call the `UploadSampleFinished` RPC.
+  string upload_url = 1;
+
+  // Values is a key-value map of values to be sent with the request.
+  map<string, string> headers = 2;
+}
+
+// Response for SampleService.CreateSample.
+message CreateSampleResponse {
+  // The created sample.
+  Sample sample = 1;
+
+  // The upload endpoint.
+  //
+  // The sample will not be visible in List requests until the upload is finished and processed.
+  // The client must call the `UploadSampleFinished` RPC to signal the server that the upload is
+  // finished.
+  //
+  // If the upload doesn't happen within a certain time frame the server will delete the sample and
+  // the endpoint will be invalid.
+  //
+  // The accepted data formats are:
+  // - mp3
+  // - wav
+  // - flac
+  // - ogg
+  SampleUploadEndpoint upload_endpoint = 2;
+}
+
+// Request for SampleService.UploadSampleFinished.
+message UploadSampleFinishedRequest {
+  // The name of the sample to be updated, in the form `samples/{name}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "sample.api.audiotool.com/Sample"}
+  ];
+}
+
+// Response for SampleService.UploadSampleFinished.
+message UploadSampleFinishedResponse {}
+
+// Request for SampleService.GetSample.
+message GetSampleRequest {
+  // Required. The name of the sample to be retrieved, in the form `samples/{name}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "sample.api.audiotool.com/Sample"}
+  ];
+}
+
+// Response for SampleService.GetSample.
+message GetSampleResponse {
+  // The sample.
+  Sample sample = 1;
+}
+
+// Request for SampleService.UpdateSample.
+message UpdateSampleRequest {
+  // The sample
+  Sample sample = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The update mask
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+// Response for SampleService.UpdateSample.
+message UpdateSampleResponse {
+  // The updated sample.
+  Sample sample = 1;
+}
+
+// Request for SampleService.DeleteSample.
+message DeleteSampleRequest {
+  // Required. The name of the sample to be deleted, in the form `samples/{name}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "sample.api.audiotool.com/Sample"}
+  ];
+}
+
+// Response for SampleService.DeleteSample.
+message DeleteSampleResponse {}
+
+// Request for SampleService.Listen.
+message ListenRequest {
+  // The names of the sample to listen to, in the form `samples/{name}`.
+  repeated string names = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "sample.api.audiotool.com/Sample"}
+  ];
+}
+
+// Response for SampleService.Listen.
+message ListenResponse {
+  // The sample.
+  SampleEvent event = 1;
+}

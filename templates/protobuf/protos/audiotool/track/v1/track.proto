@@ -1,0 +1,161 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.track.v1;
+
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+// TrackLicense is the license of the Track.
+enum TrackLicense {
+  // Unspecified license.
+  TRACK_LICENSE_UNSPECIFIED = 0;
+
+  // No rights reserved.
+  TRACK_LICENSE_NO_RIGHTS_RESERVED = 1;
+
+  // Creative Commons license.
+  TRACK_LICENSE_CREATIVE_COMMONS = 2;
+
+  // Creative Commons Non-Commercial license.
+  TRACK_LICENSE_CREATIVE_COMMONS_NON_COMMERCIAL = 3;
+
+  // All rights reserved.
+  TRACK_LICENSE_ALL_RIGHTS_RESERVED = 4;
+
+  // Royalty free license.
+  TRACK_LICENSE_ROYALTY_FREE = 5;
+}
+
+// Track is a single audio release and can be referenced in an album.
+//
+// The track is a representation in time and can be updated. Historical information of a track can
+// be received via ListTrackHistory
+//
+// A track can be created and updated by a project. See the project API for details.
+message Track {
+  option (google.api.resource) = {
+    type: "track.api.audiotool.com/Track"
+    pattern: "tracks/{track}"
+    singular: "track"
+    plural: "tracks"
+  };
+
+  // Globally unique name of the track.
+  // The name is consistent between revisions.
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // The project_id of the Track if it was created by a project.
+  string project_name = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The track in the form of 'tracks/{id}' that this track is a remix of.
+  string remix_of = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The project_commit_index of the Track if it was created by a project.
+  //
+  // This is references the exact point in time the track has been published of a project.
+  // The project can evolve after the track has been published.
+  uint32 project_commit_index = 4 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The Track name.
+  string display_name = 5 [(google.api.field_behavior) = REQUIRED];
+
+  // The description of the Track.
+  string description = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // The list of contributors of the Track in the form of 'users/{user}'.
+  //
+  // This is a list of users that have contributed to the Track. The main author is also in this
+  // list.
+  repeated string contributor_names = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Timestamp when this Track was created.
+  google.protobuf.Timestamp create_time = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Timestamp when this Track was last updated.
+  google.protobuf.Timestamp update_time = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The duration of the Track.
+  google.protobuf.Duration play_duration = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The tags of the Track
+  repeated string tags = 11 [(google.api.field_behavior) = OPTIONAL];
+
+  // The cover art URL of the track.
+  string cover_url = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The snapshot of the DAW configuration of the Track.
+  string snapshot_url = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Whether the authenticated user favorited the track.
+  //
+  // This is only exposed if the user is authenticated.  The user can like a Preset via
+  // Favorites API.
+  bool favorited_by_user = 14 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Beats per minute of the Track.
+  double bpm = 15 [(google.api.field_behavior) = REQUIRED];
+
+  // The genre name of the Track.
+  string genre_name = 16 [(google.api.field_behavior) = REQUIRED];
+
+  // Whether a simple download is allowed for the user. API implementers must respect this value.
+  bool download_allowed = 17 [(google.api.field_behavior) = REQUIRED];
+
+  // The license of the Track.
+  TrackLicense license = 18 [(google.api.field_behavior) = REQUIRED];
+
+  // The number of downloads of the Track.
+  //
+  // This will not be exposed for historical data.
+  int32 num_downloads = 19 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The number of plays of the Track.
+  //
+  // This will not be exposed for historical data.
+  int32 num_plays = 20 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The number of favorites of the Track.
+  //
+  // This will not be exposed for historical data.
+  int32 num_favorites = 21 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The number of comments of the Track.
+  //
+  // This will not be exposed for historical data.
+  int32 num_comments = 22 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The underlying URL of the track to play (mp3 format).
+  string mp3_url = 23 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The underlying URL of the track to play (ogg format).
+  string ogg_url = 24 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The underlying URL of the track to play (wav format).
+  string wav_url = 25 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The underlying URL of the track to play (hls format).
+  string hls_url = 26 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Whether remixing is allowed for this track (copying the track to a new project).
+  //
+  // If this is set to true, the track can be copied by users not having a role in the project.
+  // If this is set to false, the track cannot be copied by users not having a
+  // role in the project.
+  bool remix_allowed = 27 [(google.api.field_behavior) = OPTIONAL];
+}

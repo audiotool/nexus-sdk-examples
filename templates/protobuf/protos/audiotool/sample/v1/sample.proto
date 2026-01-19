@@ -1,0 +1,139 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.sample.v1;
+
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+// SampleType is the type of the Sample.
+enum SampleType {
+  // Unspecified Sample type.
+  SAMPLE_TYPE_UNSPECIFIED = 0;
+
+  // The Sample is a one-shot Sample.
+  SAMPLE_TYPE_ONE_SHOT = 1;
+
+  // The Sample is a loop Sample.
+  SAMPLE_TYPE_LOOP = 2;
+}
+
+// SampleClearance is the clearance of the Sample.
+enum SampleClearance {
+  // Unspecified Sample clearance.
+  SAMPLE_CLEARANCE_UNSPECIFIED = 0;
+
+  // The Sample is verified to be safe to use.
+  SAMPLE_CLEARANCE_SAFE = 1;
+
+  // The Sample is not from a trusted source - the sample could cause copyright issues and may be
+  // removed from the platform. A track using this sample could inherit copyright issues.
+  SAMPLE_CLEARANCE_UNSAFE = 2;
+}
+
+// SampleUsage controls the visibility of the Sample and how the uploader allows the usage.
+enum SampleUsage {
+  // Unspecified Sample usage.
+  SAMPLE_USAGE_UNSPECIFIED = 0;
+
+  // The Sample is used in a public.
+  SAMPLE_USAGE_PUBLIC = 1;
+
+  // The Sample is allowed to be used (e.g. for remixes) but hidden from listing/searching.
+  //
+  // You can retrieve the samples by a get requests and they will be exposed by the tracks API.
+  SAMPLE_USAGE_UNLISTED = 2;
+
+  // The Sample is private and only visible to the owner.
+  SAMPLE_USAGE_PRIVATE = 3;
+}
+
+// Sample is a resource representing a single Sample.
+message Sample {
+  option (google.api.resource) = {
+    type: "sample.api.audiotool.com/Sample"
+    pattern: "samples/{sample}"
+    singular: "sample"
+    plural: "samples"
+  };
+
+  // The Sample name.
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // The display name of the Sample.
+  string display_name = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The description of the Sample.
+  string description = 3 [(google.api.field_behavior) = OPTIONAL];
+
+  // The Owner of the Sample in the form of `users/{user}`.
+  string owner_name = 4 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Whether the authed user liked the sample.
+  //
+  // This is only exposed if the user is authenticated.  The user can like a Preset via
+  // Favor API.
+  bool favorited_by_user = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The number of favorites of the Sample.
+  int32 num_favorites = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The number of usages of the Sample.
+  int32 num_usages = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The beats per minute of the Sample.
+  double bpm = 8 [(google.api.field_behavior) = REQUIRED];
+
+  // The type of the Sample.
+  SampleType sample_type = 9 [(google.api.field_behavior) = REQUIRED];
+
+  // The duration of the Sample.
+  google.protobuf.Duration play_duration = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Timestamp when this Sample was created.
+  google.protobuf.Timestamp create_time = 11 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Timestamp when this Sample was last updated.
+  //
+  // The underlying audio can't be changed. Only some metadata (of this message) can be changed.
+  google.protobuf.Timestamp update_time = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The clearance of the Sample.
+  SampleClearance clearance = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The usage of the Sample.
+  SampleUsage usage = 14 [(google.api.field_behavior) = REQUIRED];
+
+  // The tags of the Sample.
+  repeated string tags = 15 [(google.api.field_behavior) = OPTIONAL];
+
+  // The underlying URL of the track to play (mp3 format).
+  string mp3_url = 16 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The underlying URL of the track to play (wav format).
+  string wav_url = 17 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The underlying URL of the track to play (mp3 format).
+  string preview_mp3_url = 18 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The underlying URL of the track to play (flac format).
+  string flac_url = 19 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // protected for future URLs
+  reserved 20 to 30;
+}

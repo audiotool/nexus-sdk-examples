@@ -1,0 +1,71 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.comment.v1;
+
+import "audiotool/comment/v1/reaction.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/timestamp.proto";
+
+// A user-authored comment.
+message Comment {
+  option (google.api.resource) = {
+    type: "comment.api.audiotool.com/Comment"
+    pattern: "tracks/{track}/comments/{comment}"
+    pattern: "tracks/{track}/comments/{parent_comment}/comments/{comment}"
+    pattern: "playlists/{playlist}/comments/{comment}"
+    pattern: "playlists/{playlist}/comments/{parent_comment}/comments/{comment}"
+    pattern: "samples/{sample}/comments/{comment}"
+    pattern: "samples/{sample}/comments/{parent_comment}/comments/{comment}"
+    pattern: "users/{user}/comments/{comment}"
+    pattern: "users/{user}/comments/{parent_comment}/comments/{comment}"
+    pattern: "contests/{contest}/comments/{comment}"
+    pattern: "contests/{contest}/comments/{parent_comment}/comments/{comment}"
+    pattern: "projects/{project}/comments/{comment}"
+    pattern: "projects/{project}/comments/{parent_comment}/comments/{comment}"
+    singular: "comment"
+    plural: "comments"
+  };
+
+  // The name of the comment.
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // The time the comment was created.
+  google.protobuf.Timestamp create_time = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The creator of the comment in the format of `users/{user}`.
+  string creator_name = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The text of the comment.
+  string text = 4 [(google.api.field_behavior) = REQUIRED];
+
+  // The last time the comment was edited
+  google.protobuf.Timestamp update_time = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Whether the comment was deleted. Deleted comments may still have replies.
+  //
+  // The deleted state can be set by the DeleteComment method.
+  bool deleted = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Reactions attached to this comment.
+  //
+  // Reactions can be managed via AddReaction and RemoveReaction.
+  repeated Reaction reactions = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Whether the user has muted the user who sent the message.
+  bool from_muted_user = 8;
+}

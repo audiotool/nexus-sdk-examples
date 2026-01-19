@@ -1,0 +1,178 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.project.v1;
+
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+// Project is a resource representing a single Project.
+message Project {
+  option (google.api.resource) = {
+    type: "project.api.audiotool.com/Project"
+    pattern: "projects/{project}"
+    singular: "project"
+    plural: "projects"
+  };
+
+  // The name of the Project.
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // The list of users having a role in the project.
+  //
+  // The user_names are the user names of the users having a role in the project.
+  //
+  // The ProjectRoles can be managed by the ProjectRoleService.
+  repeated string user_names = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The creator of the project.
+  //
+  // The owner of the project can be handed over to another user. The creator_name will stay the
+  // same.
+  string creator_name = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The track_name of the project (this is set when a the project has been published as a track).
+  string track_name = 4 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // If the project was remixed from a track, this will be the name of the track.
+  //
+  // If this value is specified, the value of `copy_of_project_name` and
+  // `copy_of_project_commit_index` is ignored and the project of the `Track` message is used.
+  // `remix_allowed` must be set to `true`.
+  //
+  // The resulting project will have the `copy_of_project_name` set to the name of the
+  // remixed track and the `copy_of_project_commit_index` set to the commit index.
+  //
+  // Historical data of the project will not be copied, only the current state of the project.
+  string remix_of_track_name = 5 [(google.api.field_behavior) = OPTIONAL];
+
+  // If the project was copied from another project, this will be the name of the project.
+  //
+  // At create time the caller will enforce a copy of a project by setting this value. The project
+  // must have `copy_allowed` set to true or the calling user must have a role in the project.
+  //
+  // Historical data of the project will not be copied, only the current state of the project.
+  //
+  // If `remix_of_track_name` is set, this value is ignored.
+  string copy_of_project_name = 6 [(google.api.field_behavior) = OPTIONAL];
+
+  // If the project was copied/remixed from a track, this will be the commit_index of the track.
+  // For legacy projects the commit can be empty, even if the `copy_of_project_name` is set.
+  //
+  // At create time the caller will enforce a copy of a project at an exact point in time by setting
+  // this value. If the value is not set, and `copy_of_project_name` is specified the latest commit
+  // of the project will be used and set.
+  uint32 copy_of_project_commit_index = 7 [(google.api.field_behavior) = OPTIONAL];
+
+  // The Project name.
+  //
+  // A random name will be generated if not provided.
+  //
+  // Refers to track.display_name on sync.
+  string display_name = 8 [(google.api.field_behavior) = OPTIONAL];
+
+  // The Description of the Project.
+  //
+  // Refers to track.description on sync.
+  string description = 9 [(google.api.field_behavior) = OPTIONAL];
+
+  // Output only. Timestamp when this Project was created.
+  google.protobuf.Timestamp create_time = 10 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output only. Timestamp when this Project was last updated.
+  google.protobuf.Timestamp update_time = 11 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The duration of the Project.
+  //
+  // Refers to track.play_duration on sync.
+  google.protobuf.Duration play_duration = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The tags of the Project.
+  //
+  // Refers to track.tags on sync.
+  repeated string tags = 13 [(google.api.field_behavior) = OPTIONAL];
+
+  // The cover art URL of the project.
+  //
+  // `?width=256&height=256&fit=cover&format=webp` can be appended to the URL for resizing
+  // (current restriction - this is only able for for CDNs > 2)
+  //
+  // The cover_url must be uploaded due ProjectService.UploadCover.
+  //
+  // Refers to track.cover_url on sync.
+  string cover_url = 14 [(google.api.field_behavior) = OPTIONAL];
+
+  // The snapshot of the DAW configuration of the project.
+  //
+  // `?width=256&height=256&fit=cover&format=webp` can be appended to the URL for resizing
+  // (current restriction - this is only able for for CDNs > 2)
+  //
+  // Refers to track.cover_url on sync.
+  string snapshot_url = 15 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Beats per minute of the project which will be the track bpm.
+  //
+  // Refers to track.bpm on sync.
+  double bpm = 16 [(google.api.field_behavior) = OPTIONAL];
+
+  // The genre name of the project, which becomes the track genre on publish.
+  //
+  // Refers to track.genre_name on sync.
+  string genre_name = 17 [(google.api.field_behavior) = OPTIONAL];
+
+  // Whether a simple download is allowed for the user. API implementers must respect this value.
+  //
+  // Refers to track.download_allowerd on sync.
+  bool download_allowed = 18 [(google.api.field_behavior) = OPTIONAL];
+
+  // Whether copying is allowed for users not having a role in the project.
+  //
+  // If this is set to true and the project is published as a track, the tracks `remix_allowed` is
+  // set to true. The tracks bool flag `remix_allowed` is used to determine if a track can be copied
+  // by users not having a role in the project and takes precedence over this value. To override
+  // this value, the metadata of the track must be updated / synced again.
+  bool copy_allowed = 19 [(google.api.field_behavior) = OPTIONAL];
+
+  // The license of the Project.
+  //
+  // Refers to track.license on sync.
+  TrackLicense license = 20 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// TrackLicense is the license of the Track.
+//
+// This is a copy of the TrackLicense enum from the Track proto to avoid dependencies.
+enum TrackLicense {
+  // Unspecified license.
+  TRACK_LICENSE_UNSPECIFIED = 0;
+
+  // No rights reserved.
+  TRACK_LICENSE_NO_RIGHTS_RESERVED = 1;
+
+  // Creative Commons license.
+  TRACK_LICENSE_CREATIVE_COMMONS = 2;
+
+  // Creative Commons Non-Commercial license.
+  TRACK_LICENSE_CREATIVE_COMMONS_NON_COMMERCIAL = 3;
+
+  // All rights reserved.
+  TRACK_LICENSE_ALL_RIGHTS_RESERVED = 4;
+
+  // Royalty free license.
+  TRACK_LICENSE_ROYALTY_FREE = 5;
+}

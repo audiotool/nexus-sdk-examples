@@ -1,0 +1,78 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.project.v1;
+
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/timestamp.proto";
+
+// ProjectRoleType defines the role of a collaborator.
+enum ProjectRoleType {
+  // Unspecified role.
+  PROJECT_ROLE_TYPE_UNSPECIFIED = 0;
+
+  // Owner can edit the project and has full control over it.
+  PROJECT_ROLE_TYPE_OWNER = 1;
+
+  // Will not be synced as a contributor to a track.
+  PROJECT_ROLE_TYPE_OWNER_UNPUBLISHED = 2;
+
+  // Editor can edit the project.
+  PROJECT_ROLE_TYPE_EDITOR = 3;
+
+  // Will not be synced as a contributor to a track.
+  PROJECT_ROLE_TYPE_EDITOR_UNPUBLISHED = 4;
+
+  // Viewer can view the project.
+  //
+  // Will not be synced as a contributor to a track.
+  PROJECT_ROLE_TYPE_VIEWER = 5;
+}
+
+// ProjectRole represents a user's role in a project.
+//
+// The owner of the project is not shown in the list of collaborators and simply is attached to the
+// project.
+//
+// Depending on the collaborator role the user can edit the project or view it and may be synced as
+// a contributor to a track.
+message ProjectRole {
+  option (google.api.resource) = {
+    type: "project.api.audiotool.com/ProjectRole"
+    pattern: "projects/{project}/roles/{role}"
+    singular: "role"
+    plural: "roles"
+  };
+
+  // The name of roles within a project.
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
+
+  // The Name of the user.
+  string user_name = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The type of role the user has in the project.
+  ProjectRoleType role_type = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // The time the role was created.
+  google.protobuf.Timestamp create_time = 4 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The time the role was last updated.
+  google.protobuf.Timestamp update_time = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The creator of the ProjectRole.
+  string creator_name = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+}

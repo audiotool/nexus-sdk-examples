@@ -1,0 +1,73 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.auth.v1;
+
+import "audiotool/auth/v1/auth.proto";
+
+// AuthService is a service that provides methods related to authentication.
+service AuthService {
+  // GetWhoami returns the user that is currently authenticated.
+  rpc GetWhoami(GetWhoamiRequest) returns (GetWhoamiResponse) {}
+
+  // ListPersonalAccessTokens returns the access tokens for the currently authenticated user.
+  rpc ListPersonalAccessTokens(ListPersonalAccessTokensRequest) returns (ListPersonalAccessTokensResponse) {}
+
+  // CreatePersonalAccessToken creates a personal access token for the currently authenticated user.
+  rpc CreatePersonalAccessToken(CreatePersonalAccessTokenRequest) returns (CreatePersonalAccessTokenResponse) {}
+
+  // DeletePersonalAccessToken deletes a personal access token for the currently authenticated user.
+  rpc DeletePersonalAccessToken(DeletePersonalAccessTokenRequest) returns (DeletePersonalAccessTokenResponse) {}
+}
+
+// GetWhoamiRequest is the request object for AuthService.GetWhoami.
+message GetWhoamiRequest {}
+
+// GetWhoamiResponse is the response object for AuthService.GetWhoami.
+message GetWhoamiResponse {
+  // The message.
+  Whoami whoami = 1;
+}
+
+// ListPersonalAccessTokensRequest is the request object for AuthService.ListPersonalAccessTokens.
+message ListPersonalAccessTokensRequest {}
+
+// ListPersonalAccessTokensResponse is the response object for AuthService.ListPersonalAccessTokensResponse
+message ListPersonalAccessTokensResponse {
+  // The access tokens associated with the user.
+  repeated PersonalAccessToken tokens = 1;
+}
+
+// CreatePersonalAccessTokenRequest is the request object for AuthService.CreatePersonalAccessToken.
+message CreatePersonalAccessTokenRequest {
+  // The access token to create.
+  PersonalAccessToken token = 1;
+}
+
+// CreatePersonalAccessTokenResponse is the response object for AuthService.CreatePersonalAccessToken
+message CreatePersonalAccessTokenResponse {
+  // The created access token
+  PersonalAccessToken token = 1;
+}
+
+// DeletePersonalAccessTokenRequest is the request object for AuthService.DeletePersonalAccessToken
+message DeletePersonalAccessTokenRequest {
+  // The name of the access token to delete.
+  string name = 1;
+}
+
+// DeletePersonalAccessTokenResponse is the response object for AuthService.DeletePersonalAccessTokenResponse
+message DeletePersonalAccessTokenResponse {}

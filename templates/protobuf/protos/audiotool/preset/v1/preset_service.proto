@@ -1,0 +1,153 @@
+// Copyright 2024 Audiotool Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package audiotool.preset.v1;
+
+import "audiotool/preset/v1/preset.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/field_mask.proto";
+
+// The preset service definition.
+service PresetService {
+  // Lists the presets.
+  rpc ListPresets(ListPresetsRequest) returns (ListPresetsResponse) {}
+
+  // Gets a preset.
+  rpc GetPreset(GetPresetRequest) returns (GetPresetResponse) {}
+
+  // Create a preset.
+  rpc CreatePreset(CreatePresetRequest) returns (CreatePresetResponse) {}
+
+  // Update a preset.
+  rpc UpdatePreset(UpdatePresetRequest) returns (UpdatePresetResponse) {}
+
+  // Deletes a preset.
+  //
+  // A preset can always be deleted. If the preset is in use by a project,
+  // the project must handle the missing link to the preset.
+  rpc DeletePreset(DeletePresetRequest) returns (DeletePresetResponse) {}
+}
+
+// Request for PresetService.ListPresets.
+message ListPresetsRequest {
+  // The standard CEL filter.
+  //
+  // Supported fields:
+  // - preset.name
+  // - preset.display_name
+  // - preset.description
+  // - preset.owner_name
+  // - preset.num_favorites
+  // - preset.num_usages
+  // - preset.create_time
+  // - preset.update_time
+  // - preset.clearance
+  // - preset.tags
+  // - preset.device_type
+  // - preset.favorited_by_user
+  string filter = 1;
+
+  // The maximum number of items to return.
+  int32 page_size = 2;
+
+  // The next_page_token value returned from a previous List request, if any.
+  string page_token = 3;
+
+  // The order to list results by.
+  string order_by = 4;
+
+  // An additional full-text search over metadata. Operates on a tokenized index.
+  //
+  // Examples:
+  // - 'kepz & techno' returns results matching both tokens
+  // - 'guitar & (jazz | funk)' returns guitar presets tagged with either jazz or funk
+  // - '!bass & guitar & (jazz | funk)' excludes presets matching "bass"
+  string text_search = 5;
+}
+
+// Response for PresetService.ListPresets.
+message ListPresetsResponse {
+  // The list of presets.
+  repeated Preset presets = 1;
+
+  // Token to retrieve the next page of results, or empty if there are no more results in the
+  // list.
+  string next_page_token = 2;
+}
+
+// Request for PresetService.GetPreset.
+message GetPresetRequest {
+  // Required. The name of the preset to be retrieved, in the form of `presets/{preset}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "preset.api.audiotool.com/Preset"}
+  ];
+}
+
+// Response for PresetService.GetPreset.
+message GetPresetResponse {
+  // The preset.
+  Preset preset = 1;
+}
+
+// Request for PresetService.CreatePreset.
+message CreatePresetRequest {
+  // The preset to create.
+  Preset preset = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The serialized configuration blob of the Preset (document-service).
+  google.protobuf.Any data = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Response for PresetService.CreatePreset.
+message CreatePresetResponse {
+  // The created preset.
+  Preset preset = 1;
+}
+
+// Request for PresetService.UpdatePreset.
+message UpdatePresetRequest {
+  // The preset
+  Preset preset = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The update mask
+  google.protobuf.FieldMask update_mask = 2;
+
+  // The serialized configuration blob of the Preset (document-service).
+  //
+  // If empty, the configuration is not updated.
+  google.protobuf.Any data = 3 [(google.api.field_behavior) = OPTIONAL];
+}
+
+// Response for PresetService.UpdatePreset.
+message UpdatePresetResponse {
+  // The updated preset.
+  Preset preset = 1;
+}
+
+// Request for PresetService.DeletePreset.
+message DeletePresetRequest {
+  // Required. The name of the preset to be deleted, in the form of `presets/{preset}`.
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {type: "preset.api.audiotool.com/Preset"}
+  ];
+}
+
+// Response for PresetService.DeletePreset.
+message DeletePresetResponse {}
