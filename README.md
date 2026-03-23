@@ -1,3 +1,7 @@
-# Nexus SDK examples
+# Audiotool Developer Examples
 
-This repo contains a few examples of how to use the SDK.
+Examples on how to use:
+* The [`@audiotool/nexus`](https://developer.audiotool.com/js-package-documentation/) js package
+* the audiotool [protocol buffer files](https://developer.audiotool.com/explore-protobufs)
+
+More info on the developer platform: https://developer.audiotool.com/
