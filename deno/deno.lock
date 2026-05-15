@@ -1,19 +1,20 @@
 {
   "version": "5",
   "specifiers": {
-    "npm:@audiotool/nexus@^0.0.8": "0.0.8_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0",
-    "npm:js-cookie@^3.0.5": "3.0.5",
+    "npm:@audiotool/nexus@^0.0.17": "0.0.17_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0",
+    "npm:js-cookie@^3.0.5": "3.0.6",
     "npm:toposort@^2.0.2": "2.0.2",
     "npm:utility-types@^3.11.0": "3.11.0",
-    "npm:uuid@^11.1.0": "11.1.0",
-    "npm:zod@^4.1.12": "4.1.12"
+    "npm:uuid@^11.1.0": "11.1.1",
+    "npm:zod@^4.1.12": "4.4.3"
   },
   "npm": {
-    "@audiotool/nexus@0.0.8_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0": {
-      "integrity": "sha512-Szli8BfUoxbtSCbZ8xaL8yus7f1zIoqsNNT8vSzFdX94ro6ZUUBzKQcn0L8r3Gu8yAfYxO903eQxl7Qt+d1mAg==",
+    "@audiotool/nexus@0.0.17_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0": {
+      "integrity": "sha512-padPIdX2GFlwoLnHqmHTuxLPOjzXf7CTE6WXoEH7wnc0qlmeGjD4PKAJagcoh0XdI5R3DXWApUd6/xFtQhO1HA==",
       "dependencies": [
         "@bufbuild/protobuf",
         "@connectrpc/connect",
+        "@connectrpc/connect-node",
         "@connectrpc/connect-web",
         "@types/js-cookie",
         "js-cookie",
@@ -24,6 +25,14 @@
     },
     "@bufbuild/protobuf@1.10.0": {
       "integrity": "sha512-QDdVFLoN93Zjg36NoQPZfsVH9tZew7wKDKyV5qRdj8ntT4wQCOradQjRaTdwMhWUYsgKsvCINKKm87FdEk96Ag=="
+    },
+    "@connectrpc/connect-node@1.7.0_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0": {
+      "integrity": "sha512-6vaPIkG/NyhxlYgytLoR9KYbPhczEboFB2OYWkA9qvUz1K7efXfeGrlRxoLtpa+r8VxyIOw73w5ktNe743nD+A==",
+      "dependencies": [
+        "@bufbuild/protobuf",
+        "@connectrpc/connect",
+        "undici"
+      ]
     },
     "@connectrpc/connect-web@1.7.0_@bufbuild+protobuf@1.10.0_@connectrpc+connect@1.7.0__@bufbuild+protobuf@1.10.0": {
       "integrity": "sha512-qyP0YOnUPRWwCc/VfsoydMJvkb7EyUPr2q9sHgBuJzbADjiqck1gKH5V5ZPzPhTLBvmz5UvG+wiZ5sMRQHU1MQ==",
@@ -38,30 +47,39 @@
         "@bufbuild/protobuf"
       ]
     },
+    "@fastify/busboy@2.1.1": {
+      "integrity": "sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA=="
+    },
     "@types/js-cookie@3.0.6": {
       "integrity": "sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ=="
     },
-    "js-cookie@3.0.5": {
-      "integrity": "sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw=="
+    "js-cookie@3.0.6": {
+      "integrity": "sha512-mYhz0Og/Wv8bZJcBC6rRzYG+rYf8DyQSK3rcUbuGHQIgSsX6uynAIVoaPgqf0udH2AGS953hGFy3w6on1rJzMw=="
     },
     "toposort@2.0.2": {
       "integrity": "sha512-0a5EOkAUp8D4moMi2W8ZF8jcga7BgZd91O/yabJCFY8az+XSzeGyTKs0Aoo897iV1Nj6guFq8orWDS96z91oGg=="
     },
+    "undici@5.29.0": {
+      "integrity": "sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==",
+      "dependencies": [
+        "@fastify/busboy"
+      ]
+    },
     "utility-types@3.11.0": {
       "integrity": "sha512-6Z7Ma2aVEWisaL6TvBCy7P8rm2LQoPv6dJ7ecIaIixHcwfbJ0x7mWdbcwlIM5IGQxPZSFYeqRCqlOOeKoJYMkw=="
     },
-    "uuid@11.1.0": {
-      "integrity": "sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==",
+    "uuid@11.1.1": {
+      "integrity": "sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==",
       "bin": true
     },
-    "zod@4.1.12": {
-      "integrity": "sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ=="
+    "zod@4.4.3": {
+      "integrity": "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="
     }
   },
   "workspace": {
     "packageJson": {
       "dependencies": [
-        "npm:@audiotool/nexus@^0.0.8",
+        "npm:@audiotool/nexus@^0.0.17",
         "npm:js-cookie@^3.0.5",
         "npm:toposort@^2.0.2",
         "npm:utility-types@^3.11.0",

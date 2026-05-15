@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@audiotool/nexus": "^0.0.8",
+    "@audiotool/nexus": "^0.0.17",
     "js-cookie": "^3.0.5",
     "toposort": "^2.0.2",
     "utility-types": "^3.11.0",

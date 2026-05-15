@@ -1,14 +1,13 @@
-import { createAudiotoolClient } from "@audiotool/nexus";
+import { createAudiotoolClient, createPATAuth } from "@audiotool/nexus";
+import { createDiskWasmLoader } from "@audiotool/nexus/node";
 import { AT_PAT, AT_PROJECT } from "./setup.ts";
 
 const client = await createAudiotoolClient({
-  authorization: AT_PAT,
+  auth: createPATAuth(AT_PAT),
+  wasm: createDiskWasmLoader(),
 });
 
-const nexus = await client.createSyncedDocument({
-  mode: "online",
-  project: AT_PROJECT,
-});
+const nexus = await client.open(AT_PROJECT);
 
 // In this example, we'll simply print out all current note regions. This is not synced in real time.
 
@@ -43,3 +42,5 @@ if (noteRegions.length > 0) {
 } else {
   console.debug("No note regions in this project.");
 }
+
+await nexus.stop();

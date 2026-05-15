@@ -1,14 +1,13 @@
-import { createAudiotoolClient } from "@audiotool/nexus";
+import { createAudiotoolClient, createPATAuth } from "@audiotool/nexus";
+import { createDiskWasmLoader } from "@audiotool/nexus/node";
 import { AT_PAT, AT_PROJECT } from "./setup.ts";
 
 const client = await createAudiotoolClient({
-  authorization: AT_PAT,
+  auth: createPATAuth(AT_PAT),
+  wasm: createDiskWasmLoader(),
 });
 
-const nexus = await client.createSyncedDocument({
-  mode: "online",
-  project: AT_PROJECT,
-});
+const nexus = await client.open(AT_PROJECT);
 
 // In this example, we print out when a note region is created, removed, moved, resized, or renamed.
 
